@@ -39,12 +39,6 @@ Once the dependencies are properly installed, follow the steps below:
   postgres=# \c wpdauth
   wpdauth=# \i db/ddl.sql
   wpdauth=# \i db/sys_config.sql
-  wpdauth=# create user uwpdauth;
-  wpdauth=# alter user uwpdauth with encrypted password '<your really secure password>';
-  wpdauth=# GRANT USAGE ON SCHEMA public TO uwpdauth; 
-  wpdauth=# GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO uwpdauth;
-  wpdauth=# GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO uwpdauth; 
-  wpdauth=# grant all privileges on database wpdauth to uwpdauth;
   wpdauth=# \q
 ```
 
