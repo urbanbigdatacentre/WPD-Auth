@@ -13,6 +13,6 @@ Once the project setup was finished successfully, follow the steps below:
 
 ```console
   $ psql -d wpdauth -c "TRUNCATE TABLE educemaden_organizations;"
-  $ psql -c wpdauth "COPY educemaden_organizations FROM 'educacao.cemaden-organization-dump.csv' DELIMITER ',' CSV HEADER;"
+  $ psql -d wpdauth -c "COPY educemaden_organizations FROM '/<absolute path>/educacao.cemaden-organization-dump.csv' DELIMITER ',' CSV HEADER;"
   $ psql -d wpdauth -c "SELECT * FROM educemaden_organizations;"
 ```

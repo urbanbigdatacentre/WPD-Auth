@@ -26,13 +26,13 @@ CREATE TABLE IF NOT EXISTS users_rolesprovider_activationkey (
     roles_id INT NOT NULL,
     activationkey uuid NOT NULL,
     FOREIGN KEY (users_id) REFERENCES users (id),
-    FOREIGN KEY (roles_id) REFERENCES roles (id),
+    FOREIGN KEY (roles_id) REFERENCES roles (id)
 );
 
 CREATE TABLE IF NOT EXISTS educemaden_organizations (
     id INT NOT NULL,
     active VARCHAR(20) NULL,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
     creation_date varchar(50) NULL,
     inep_code varchar(100) NULL,
     phone varchar(100) NOT NULL,
