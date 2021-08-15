@@ -1,9 +1,9 @@
 # wpdAuth.load module
-This module is responsible to load the organizations dump from [Cemaden Educations web site](http://educacao.cemaden.gov.br/site/organization/). The dump is loaded from the csv file [here]() in this folder following the [ddl structure]() to the entity 'educemaden_organizations'. In order to avoid SQL errors, there are no indexes on 'educemaden_organizations' entity, and for each load this entity should be truncated.
+This module is responsible to load the organizations dump from [Cemaden Educations web site](http://educacao.cemaden.gov.br/site/organization/). The dump is loaded from the csv file [here](https://github.com/IGSD-UoW/wpdAuth/blob/main/load/educacao.cemaden-organization-dump.csv) in this folder following the [ddl structure](https://github.com/IGSD-UoW/wpdAuth/blob/main/db/ddl.sql) to the entity 'educemaden_organizations'. In order to avoid SQL errors, there are no indexes on 'educemaden_organizations' entity, and for each load this entity should be truncated.
 
 # Dependencies
 
-- Make sure the setup was finished successfully according to the instruction in the root [README file]().
+- Make sure the setup was finished successfully according to the instruction in the root [README file](https://github.com/IGSD-UoW/wpdAuth/blob/main/README.md).
 
 # How to run this load
 
