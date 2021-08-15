@@ -11,6 +11,7 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 	  Users findByUsername(String username);
 
 	  //@Transactional
-	  //void activateByUsername(String username);
+	  //void activateByUsername(String username, String activationkey);
+	  //PostGreSQL -> SELECT uuid_generate_v4();
 
 }

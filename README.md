@@ -37,6 +37,7 @@ Once the dependencies are properly installed, follow the steps below:
   postgres=# \conninfo
   postgres=# CREATE DATABASE wpdauth;
   postgres=# \c wpdauth
+  wpdauth=# CREATE EXTENSION "uuid-ossp";
   wpdauth=# \i db/ddl.sql
   wpdauth=# \i db/sys_config.sql
   wpdauth=# \q
