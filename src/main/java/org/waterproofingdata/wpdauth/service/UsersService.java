@@ -1,5 +1,6 @@
 package org.waterproofingdata.wpdauth.service;
 
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,9 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.waterproofingdata.wpdauth.exception.CustomException;
+import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.Users;
+import org.waterproofingdata.wpdauth.model.UsersRolesproviderActivationKey;
 import org.waterproofingdata.wpdauth.repository.EduCemadenOrganizationsRepository;
 import org.waterproofingdata.wpdauth.repository.UsersRepository;
+import org.waterproofingdata.wpdauth.repository.UsersRolesproviderActivationKeyRepository;
 import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 
 @Service
@@ -24,6 +28,9 @@ public class UsersService {
 	  
 	  @Autowired
 	  private EduCemadenOrganizationsRepository eduCemadenOrganizationsRepository;
+	  
+	  @Autowired
+	  private UsersRolesproviderActivationKeyRepository usersRolesproviderActivationKeyRepository;
 
 	  @Autowired
 	  private PasswordEncoder passwordEncoder;
@@ -75,6 +82,14 @@ public class UsersService {
 
 	  public Users whoami(HttpServletRequest req) {
 	    return userRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
+	  }
+	  
+	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {
+		return eduCemadenOrganizationsRepository.findByUserId(userid);
+	  }
+	  
+	  public List<UsersRolesproviderActivationKey> findRolesproviderActivationKeysById(Integer usersid) {
+	    return usersRolesproviderActivationKeyRepository.findByUsersid(usersid);
 	  }
 
 	  public String refresh(String username) {

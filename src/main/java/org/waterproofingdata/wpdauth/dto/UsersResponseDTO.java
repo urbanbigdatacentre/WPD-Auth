@@ -26,5 +26,5 @@ public class UsersResponseDTO {
 	  EduCemadenOrganizations eduCemadenOrganization;
 	  
 	  @ApiModelProperty(position = 4)
-	  List<UsersRolesproviderActivationKey> rolesProviderActivationKey;
+	  List<UsersRolesproviderActivationKey> rolesProviderActivationKeys;
 }

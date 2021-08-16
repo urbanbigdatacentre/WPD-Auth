@@ -77,7 +77,10 @@ public class UsersController {
 	      @ApiResponse(code = 404, message = "The user doesn't exist"), //
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO search(@ApiParam("Username") @PathVariable String username) {
-	    return modelMapper.map(userService.search(username), UsersResponseDTO.class);
+		  UsersResponseDTO urDTO = modelMapper.map(userService.search(username), UsersResponseDTO.class);
+		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
+		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  return urDTO;
 	  }
 
 	  @GetMapping(value = "/me")
@@ -88,7 +91,10 @@ public class UsersController {
 	      @ApiResponse(code = 403, message = "Access denied"), //
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO whoami(HttpServletRequest req) {
-	    return modelMapper.map(userService.whoami(req), UsersResponseDTO.class);
+		  UsersResponseDTO urDTO = modelMapper.map(userService.whoami(req), UsersResponseDTO.class);
+		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
+		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  return urDTO;
 	  }
 
 	  @GetMapping("/refresh")
