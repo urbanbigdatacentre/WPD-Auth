@@ -8,12 +8,12 @@ info:
     the token, you should click on the right top button `Authorize` and
     introduce it with the prefix "Bearer ".
   version: 1.0.0
-  title: JSON Web Token Authentication API
+  title: The authenticator for the Waterproofing Data (WPD) Work Packages
   contact:
-    email: mauriurraco@gmail.com
+    email: igsd@warwick.ac.uk
   license:
-    name: MIT License
-    url: http://opensource.org/licenses/MIT
+    name: Apache-2.0 License
+    url: https://opensource.org/licenses/Apache-2.0
 host: localhost:8080
 basePath: /
 tags:
