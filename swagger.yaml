@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
   description: >-
-    This is a sample JWT authentication service. You can find out more about JWT
-    at [https://jwt.io/](https://jwt.io/). For this sample, you can use the
+    This is the JWT authentication service for the Waterproofing Data (WPD) Work Packages. You can find out more about JWT
+    at [https://jwt.io/](https://jwt.io/). In order to run this, you can use the
     `admin` or `client` users (password: admin and client respectively) to test
     the authorization filters. Once you have successfully logged in and obtained
     the token, you should click on the right top button `Authorize` and
