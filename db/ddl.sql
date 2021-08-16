@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS users_roles (
 );
 
 CREATE TABLE IF NOT EXISTS users_rolesprovider_activationkey ( 
+    id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     roles_id INT NOT NULL,
     activationkey uuid NOT NULL,
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS educemaden_organizations (
 );
 
 CREATE TABLE IF NOT EXISTS users_educemaden_organizations ( 
+    id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     educemaden_organizations_id INT NOT NULL,
     activationkey uuid NOT NULL,

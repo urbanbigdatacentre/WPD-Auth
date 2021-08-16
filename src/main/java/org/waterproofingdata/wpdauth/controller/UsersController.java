@@ -42,7 +42,7 @@ public class UsersController {
 	  public String login(//
 	      @ApiParam("Username") @RequestParam String username, //
 	      @ApiParam("Password") @RequestParam String password) {
-	    return userService.signin(username, password);
+	    return userService.login(username, password);
 	  }
 
 	  @PostMapping("/signup")
@@ -63,8 +63,8 @@ public class UsersController {
 	      @ApiResponse(code = 403, message = "Access denied"), //
 	      @ApiResponse(code = 404, message = "The user doesn't exist"), //
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-	  public String activate(@ApiParam("Username") @PathVariable String username) {
-	    userService.activate(username);
+	  public String activate(@ApiParam("Username") @PathVariable String username, @ApiParam("ActivationKey") @PathVariable String activationkey) {
+	    userService.activate(username, activationkey);
 	    return username;
 	  }
 

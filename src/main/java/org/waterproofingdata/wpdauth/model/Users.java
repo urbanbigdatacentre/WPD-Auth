@@ -46,6 +46,7 @@ public class Users {
 	  @Column(nullable = true)
 	  private String surname;
 	  
+	  @Column(nullable = true)
 	  private String avatar;
 
 	  @Column(nullable = false)

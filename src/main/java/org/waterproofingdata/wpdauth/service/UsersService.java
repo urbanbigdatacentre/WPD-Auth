@@ -1,5 +1,6 @@
 package org.waterproofingdata.wpdauth.service;
 
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.Users;
+import org.waterproofingdata.wpdauth.repository.EduCemadenOrganizationsRepository;
 import org.waterproofingdata.wpdauth.repository.UsersRepository;
 import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 
@@ -19,6 +21,9 @@ import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 public class UsersService {
 	  @Autowired
 	  private UsersRepository userRepository;
+	  
+	  @Autowired
+	  private EduCemadenOrganizationsRepository eduCemadenOrganizationsRepository;
 
 	  @Autowired
 	  private PasswordEncoder passwordEncoder;
@@ -33,11 +38,12 @@ public class UsersService {
 		  return userRepository.existsByUsername(username);
 	  }
 
-	  public String signin(String username, String password) {
+	  public String login(String username, String password) {
 	    try {
 	      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 	      return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
-	    } catch (AuthenticationException e) {
+	    } 
+	    catch (AuthenticationException e) {
 	      throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
 	    }
 	  }
@@ -45,14 +51,17 @@ public class UsersService {
 	  public String signup(Users user) {
 	    if (!existsByUsername(user.getUsername())) {
 	      user.setPassword(passwordEncoder.encode(user.getPassword()));
+	      user.setActive(0);
 	      userRepository.save(user);
 	      return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
-	    } else {
+	    } 
+	    else {
 	      throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
 	    }
 	  }
 
-	  public void activate(String username) {
+	  public void activate(String username, String activationkey) {
+		  String uuid = UUID.randomUUID().toString();
 	    //userRepository.activateByUsername(username);
 	  }
 

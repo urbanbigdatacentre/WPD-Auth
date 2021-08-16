@@ -45,4 +45,6 @@ public class EduCemadenOrganizations {
 
     @Column(nullable = true)
     private String responsible;
+    
+    private String activationkey;
 }

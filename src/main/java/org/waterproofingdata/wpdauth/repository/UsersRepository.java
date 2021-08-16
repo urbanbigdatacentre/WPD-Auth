@@ -15,12 +15,4 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 	  @Transactional
 	  @Query(value = "UPDATE users SET active = ?2 WHERE username = ?1", nativeQuery = true)
 	  void activateByUsername(String username, Integer active);
-	  
-	  @Transactional
-	  @Query(value = "INSERT INTO users_rolesprovider_activationkey(users_id, roles_id, activationkey) VALUES VALUES (?1, ?2, ?3);", nativeQuery = true)
-	  void insertUsersRolesProvider(Integer idUser, Integer idRoles, String activationkey);
-
-	  @Transactional
-	  @Query(value = "INSERT INTO users_educemaden_organizations(users_id, educemaden_organizations_id, activationkey) VALUES (?1, ?2, ?3);", nativeQuery = true)
-	  void insertUsersEduCemadenOrganizations(Integer idUser, Integer idEduCemadenOrganizations, String activationkey);
 }
