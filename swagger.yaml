@@ -59,6 +59,42 @@ paths:
             - global
         - apiKey: []
       deprecated: false
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: ${UserController.signin}
+      operationId: loginUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: password
+          in: query
+          description: Password
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: username
+          in: query
+          description: Username
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Something went wrong
+        '422':
+          description: Invalid username/password supplied
+      security:
+        - Authorization:
+            - global
+      deprecated: false
   /users/me:
     get:
       tags:
@@ -96,42 +132,6 @@ paths:
           description: OK
           schema:
             type: string
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-  /users/signin:
-    post:
-      tags:
-        - users
-      summary: ${UserController.signin}
-      operationId: loginUsingPOST
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: password
-          in: query
-          description: Password
-          required: false
-          type: string
-          allowEmptyValue: false
-        - name: username
-          in: query
-          description: Username
-          required: false
-          type: string
-          allowEmptyValue: false
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: string
-        '400':
-          description: Something went wrong
-        '422':
-          description: Invalid username/password supplied
       security:
         - Authorization:
             - global
