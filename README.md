@@ -1,5 +1,5 @@
 # wpdAuth
-The authenticator for the Waterproofing Data (WPD) Work Packages
+The authenticator for the Waterproofing Data (WPD) Work Packages. The complete Swagger documentation is available [here](https://igsd-uow.github.io/wpdAuth/).
 
 ## How this project was created
 
