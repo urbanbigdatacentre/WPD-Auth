@@ -35,7 +35,7 @@ public class UsersController {
 	  private ModelMapper modelMapper;
 
 	  @PostMapping("/login")
-	  @ApiOperation(value = "${UserController.signin}")
+	  @ApiOperation(value = "${UserController.login}")
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //
 	      @ApiResponse(code = 422, message = "Invalid username/password supplied")})
@@ -78,8 +78,8 @@ public class UsersController {
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO search(@ApiParam("Username") @PathVariable String username) {
 		  UsersResponseDTO urDTO = modelMapper.map(userService.search(username), UsersResponseDTO.class);
-		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
-		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  //urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
+		  //urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
 		  return urDTO;
 	  }
 
@@ -92,8 +92,8 @@ public class UsersController {
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO whoami(HttpServletRequest req) {
 		  UsersResponseDTO urDTO = modelMapper.map(userService.whoami(req), UsersResponseDTO.class);
-		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
-		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  //urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
+		  //urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
 		  return urDTO;
 	  }
 
