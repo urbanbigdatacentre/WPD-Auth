@@ -43,6 +43,8 @@ Once the dependencies are properly installed, follow the steps below:
   wpdauth=# \q
 ```
 
+- Make sure the load mode ran successfully as described in the [load folder](https://github.com/IGSD-UoW/wpdAuth/tree/main/load)
+
 - Install dependencies
 
 ```console
@@ -69,7 +71,7 @@ $ curl -X GET http://localhost:8080/users/me
 - Make a POST request to `/users/signin` with the default admin user we programatically created to get a valid JWT token
 
 ```
-$ curl -X POST 'http://localhost:8080/users/signin?username=admin&password=admin'
+$ curl -X POST 'http://localhost:8080/users/login?username=admin&password=admin'
 ```
 
 - Add the JWT token as a Header parameter and make the initial GET request to `/users/me` again
