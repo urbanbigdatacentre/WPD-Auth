@@ -22,11 +22,9 @@ public class UsersResponseDTO {
 	  @ApiModelProperty(position = 2)
 	  List<Roles> roles;
 	  
-	  /*
 	  @ApiModelProperty(position = 3)
 	  EduCemadenOrganizations eduCemadenOrganization;
 	  
 	  @ApiModelProperty(position = 4)
 	  List<UsersRolesproviderActivationKey> rolesProviderActivationKeys;
-	  */
 }

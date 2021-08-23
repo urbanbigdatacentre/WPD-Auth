@@ -85,7 +85,7 @@ public class UsersService {
 	  }
 	  
 	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {
-		return eduCemadenOrganizationsRepository.findByUserId(userid);
+	  	return eduCemadenOrganizationsRepository.findByUserId(userid); 
 	  }
 	  
 	  public List<UsersRolesproviderActivationKey> findRolesproviderActivationKeysById(Integer usersid) {
