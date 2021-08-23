@@ -24,7 +24,7 @@ import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 @Service
 public class UsersService {
 	  @Autowired
-	  private UsersRepository userRepository;
+	  private UsersRepository usersRepository;
 	  
 	  @Autowired
 	  private EduCemadenOrganizationsRepository eduCemadenOrganizationsRepository;
@@ -42,13 +42,13 @@ public class UsersService {
 	  private AuthenticationManager authenticationManager;
 	  
 	  public boolean existsByUsername(String username) {
-		  return userRepository.existsByUsername(username);
+		  return usersRepository.existsByUsername(username);
 	  }
 
 	  public String login(String username, String password) {
 	    try {
 	      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-	      return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
+	      return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
 	    } 
 	    catch (AuthenticationException e) {
 	      throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -59,7 +59,7 @@ public class UsersService {
 	    if (!existsByUsername(user.getUsername())) {
 	      user.setPassword(passwordEncoder.encode(user.getPassword()));
 	      user.setActive(0);
-	      userRepository.save(user);
+	      usersRepository.save(user);
 	      return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
 	    } 
 	    else {
@@ -73,7 +73,7 @@ public class UsersService {
 	  }
 
 	  public Users search(String username) {
-	    Users user = userRepository.findByUsername(username);
+	    Users user = usersRepository.findByUsername(username);
 	    if (user == null) {
 	      throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
 	    }
@@ -81,7 +81,7 @@ public class UsersService {
 	  }
 
 	  public Users whoami(HttpServletRequest req) {
-	    return userRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
+	    return usersRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
 	  }
 	  
 	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {
@@ -93,6 +93,6 @@ public class UsersService {
 	  }
 
 	  public String refresh(String username) {
-	    return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
+	    return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
 	  }
 }

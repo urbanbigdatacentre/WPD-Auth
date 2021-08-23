@@ -2,11 +2,18 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
     firstname VARCHAR(100) NULL,
     surname VARCHAR(100) NULL,
     avatar VARCHAR(100) NULL,
     active INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS forgotpassword_keys ( 
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    key VARCHAR(4) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS roles (

@@ -11,6 +11,10 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 	  boolean existsByUsername(String username);
 
 	  Users findByUsername(String username);
+	  
+	  boolean existsByEmail(String email);
+	  
+	  Users findByEmail(String email);
 
 	  @Transactional
 	  @Query(value = "UPDATE users SET active = ?2 WHERE username = ?1", nativeQuery = true)

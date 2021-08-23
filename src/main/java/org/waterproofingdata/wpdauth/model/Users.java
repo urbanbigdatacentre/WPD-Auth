@@ -35,7 +35,7 @@ public class Users {
 	  @Column(nullable = false)
 	  private String password;
 	  
-	  @Column(unique = true, nullable = true)
+	  @Column(unique = true, nullable = false)
 	  private String email;	  
 	  
 	  @Size(min = 4, max = 255, message = "Minimum firstname length: 4 characters")
