@@ -16,6 +16,21 @@ CREATE TABLE IF NOT EXISTS forgotpassword_keys (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS forgotpassword_questions ( 
+    id SERIAL PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    active INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS forgotpassword_questions_users_answers ( 
+    id SERIAL PRIMARY KEY,
+    forgotpassword_questions_id INT NOT NULL,
+    users_id INT NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    FOREIGN KEY (forgotpassword_questions_id) REFERENCES forgotpassword_questions (id),
+    FOREIGN KEY (users_id) REFERENCES users (id)
+);
+
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,

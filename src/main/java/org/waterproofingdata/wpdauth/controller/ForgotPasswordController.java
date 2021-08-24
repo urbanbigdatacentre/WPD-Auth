@@ -20,21 +20,21 @@ public class ForgotPasswordController {
 	@Autowired
 	private ForgotPasswordService forgotPasswordService;
 	
-	  @PostMapping("/sendkey")
-	  @ApiOperation(value = "${ForgotPasswordController.sendkey}")
+	  @PostMapping("/sendkeybyemail")
+	  @ApiOperation(value = "${ForgotPasswordController.sendkeybyemail}")
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //
 	      @ApiResponse(code = 422, message = "Invalid email supplied")})
-	  public void sendkey(@ApiParam("Email") @RequestParam String email) {
-		  forgotPasswordService.sendkey(email);
+	  public void sendkeybyemail(@ApiParam("Email") @RequestParam String email) {
+		  forgotPasswordService.sendKeyByEmail(email);
 	  }
 	  
-	  @PostMapping("/login")
-	  @ApiOperation(value = "${UserController.login}")
+	  @PostMapping("/loginbyemailandkey")
+	  @ApiOperation(value = "${ForgotPasswordController.loginbyemailandkey}")
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //
 	      @ApiResponse(code = 422, message = "Invalid username/password supplied")})
-	  public String login(//
+	  public String loginbyemailandkey(//
 	      @ApiParam("Email") @RequestParam String email, //
 	      @ApiParam("Key") @RequestParam String key) {
 	    return forgotPasswordService.loginByEmailAndKey(email, key);

@@ -1,5 +1,6 @@
 package org.waterproofingdata.wpdauth.service;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.ForgotPasswordKeys;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordQuestions;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordQuestionsUsersAnswers;
 import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.repository.ForgotPasswordKeysRepository;
+import org.waterproofingdata.wpdauth.repository.ForgotPasswordQuestionsRepository;
+import org.waterproofingdata.wpdauth.repository.ForgotPasswordQuestionsUsersAnswersRepository;
 import org.waterproofingdata.wpdauth.repository.UsersRepository;
 import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 
@@ -19,6 +24,12 @@ import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 public class ForgotPasswordService {
 	@Autowired
 	private ForgotPasswordKeysRepository forgotPasswordKeysRepository;
+	
+	@Autowired
+	private ForgotPasswordQuestionsRepository forgotPasswordQuestionsRepository;
+	
+	@Autowired
+	private ForgotPasswordQuestionsUsersAnswersRepository forgotPasswordQuestionsUsersAnswersRepository;
 	
 	@Autowired
 	private UsersRepository usersRepository;
@@ -32,7 +43,7 @@ public class ForgotPasswordService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     
-	public void sendkey(String email) {
+	public void sendKeyByEmail(String email) {
 		Users user = usersRepository.findByEmail(email);
 	    if (user == null) {
 		      throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
@@ -70,14 +81,53 @@ public class ForgotPasswordService {
 		return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
 	}
 	
-	//public String loginByEmailAndAnswers(String email, List<PasswordAnswers> passwordAnswers)
-	
-	public void passwordUpdate(String email, String newPassword) {
+	public void passwordUpdateByEmail(String email, String newPassword) {
 		Users user = usersRepository.findByEmail(email);
 	    if (user == null) {
 		      throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
 	    }
 	    user.setPassword(passwordEncoder.encode(newPassword));
 	    usersRepository.save(user);
+	}
+	
+	public List<ForgotPasswordQuestions> findAllForgotPasswordQuestions() {
+		return forgotPasswordQuestionsRepository.findAll();
+	}
+	
+	public void saveForgotPasswordQuestionsUsersAnswers(ForgotPasswordQuestionsUsersAnswers forgotPasswordQuestionsUsersAnswer) {
+		if (!forgotPasswordQuestionsRepository.existsById(forgotPasswordQuestionsUsersAnswer.getForgotpasswordquestionsid())) {
+			throw new CustomException("The Forgot Password Questions provided doesn't exist", HttpStatus.NOT_FOUND);
+		}
+		
+		if (!usersRepository.existsById(forgotPasswordQuestionsUsersAnswer.getUsersid())) {
+			throw new CustomException("The User provided doesn't exist", HttpStatus.NOT_FOUND);
+		}
+		
+		forgotPasswordQuestionsUsersAnswersRepository.save(forgotPasswordQuestionsUsersAnswer);
+	}
+	
+	public String loginByEmailAndAnswers(String email, List<ForgotPasswordQuestionsUsersAnswers> answers) {
+		Users user = usersRepository.findByEmail(email);
+	    if (user == null) {
+	    	throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
+	    }
+	    
+	    int correctAnswers = 0;
+	    for (ForgotPasswordQuestionsUsersAnswers answer : answers) {
+	    	ForgotPasswordQuestionsUsersAnswers answerComparison = forgotPasswordQuestionsUsersAnswersRepository.findByForgotPasswordQuestionsAndUserid(answer.getForgotpasswordquestionsid(), answer.getUsersid());
+	    	if (answerComparison == null) {
+	    		throw new CustomException("The comparison answer doesn't exist", HttpStatus.NOT_FOUND);
+	    	}
+	    	
+	    	if (answer.getAnswer().equalsIgnoreCase(answerComparison.getAnswer())) {
+	    		correctAnswers++;
+	    	}
+	    }
+	    if (correctAnswers < 2) {
+	    	throw new CustomException("Invalid answers supplied to login. Must have at least 2 correct ones.", HttpStatus.UNPROCESSABLE_ENTITY);
+	    }
+		
+	    String username = user.getUsername();
+		return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
 	}
 }
