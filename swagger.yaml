@@ -17,13 +17,11 @@ tags:
     description: Operations about users
 paths:
   /forgotpasswords/findallforgotpasswordquestions:
-    post:
+    get:
       tags:
         - forgotpasswords
       summary: ${ForgotPasswordsController.findallforgotpasswordquestions}
-      operationId: findallforgotpasswordquestionsUsingPOST
-      consumes:
-        - application/json
+      operationId: findallforgotpasswordquestionsUsingGET
       produces:
         - '*/*'
       responses:
