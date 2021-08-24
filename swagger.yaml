@@ -1,12 +1,6 @@
 swagger: '2.0'
 info:
-  description: >-
-    This is the JWT authentication service for the Waterproofing Data (WPD) Work Packages. You can find out more about JWT
-    at [https://jwt.io/](https://jwt.io/). In order to run this, you can use the
-    `admin` or `client` users (password: admin and client respectively) to test
-    the authorization filters. Once you have successfully logged in and obtained
-    the token, you should click on the right top button `Authorize` and
-    introduce it with the prefix "Bearer ".
+  description: 'This is a sample JWT authentication service. You can find out more about JWT at [https://jwt.io/](https://jwt.io/). For this sample, you can use the `admin` or `client` users (password: admin and client respectively) to test the authorization filters. Once you have successfully logged in and obtained the token, you should click on the right top button `Authorize` and introduce it with the prefix "Bearer ".'
   version: 1.0.0
   title: The authenticator for the Waterproofing Data (WPD) Work Packages
   contact:
@@ -17,9 +11,208 @@ info:
 host: localhost:8080
 basePath: /
 tags:
+  - name: forgotpasswords
+    description: Forgot Passwords Controller
   - name: users
     description: Operations about users
 paths:
+  /forgotpasswords/findallforgotpasswordquestions:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.findallforgotpasswordquestions}
+      operationId: findallforgotpasswordquestionsUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ForgotPasswordsQuestionsResponseDTO'
+        '400':
+          description: Something went wrong
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /forgotpasswords/loginbyemailandanswers:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.loginbyemailandanswers}
+      operationId: loginbyemailandanswersUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: answers
+          in: query
+          description: Answers
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: email
+          in: query
+          description: Email
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Something went wrong
+        '404':
+          description: The user or answer don't exist
+        '422':
+          description: Invalid answers supplied to login. Must have at least 2 correct ones.
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /forgotpasswords/loginbyemailandkey:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.loginbyemailandkey}
+      operationId: loginbyemailandkeyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: email
+          in: query
+          description: Email
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: key
+          in: query
+          description: Key
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Something went wrong
+        '422':
+          description: Invalid username/password supplied
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /forgotpasswords/passwordupdatebyemail:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.passwordupdatebyemail}
+      operationId: passwordupdatebyemailUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: email
+          in: query
+          description: Email
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: newPassword
+          in: query
+          description: NewPassword
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Something went wrong
+        '403':
+          description: Access denied
+        '404':
+          description: The user doesn't exist
+        '500':
+          description: Expired or invalid JWT token
+      security:
+        - Authorization:
+            - global
+        - apiKey: []
+      deprecated: false
+  /forgotpasswords/saveforgotpasswordquestionsusersanswers:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.saveforgotpasswordquestionsusersanswers}
+      operationId: saveforgotpasswordquestionsusersanswersUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: answer
+          description: Forgot Password Questions Users Answers
+          required: false
+          schema:
+            $ref: '#/definitions/ForgotPasswordsQuestionsUsersAnswersRequestDTO'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Something went wrong
+        '403':
+          description: Access denied
+        '404':
+          description: The user or forgot password questions don't exist
+        '500':
+          description: Expired or invalid JWT token
+      security:
+        - Authorization:
+            - global
+        - apiKey: []
+      deprecated: false
+  /forgotpasswords/sendkeybyemail:
+    post:
+      tags:
+        - forgotpasswords
+      summary: ${ForgotPasswordsController.sendkeybyemail}
+      operationId: sendkeybyemailUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: email
+          in: query
+          description: Email
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Something went wrong
+        '422':
+          description: Invalid email supplied
+      security:
+        - Authorization:
+            - global
+      deprecated: false
   /users/activate:
     post:
       tags:
@@ -63,7 +256,7 @@ paths:
     post:
       tags:
         - users
-      summary: ${UserController.signin}
+      summary: ${UserController.login}
       operationId: loginUsingPOST
       consumes:
         - application/json
@@ -235,6 +428,33 @@ definitions:
       website:
         type: string
     title: EduCemadenOrganizations
+  ForgotPasswordsQuestionsResponseDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      question:
+        type: string
+      active:
+        type: integer
+        format: int32
+    title: ForgotPasswordsQuestionsResponseDTO
+  ForgotPasswordsQuestionsUsersAnswersRequestDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      forgotpasswordquestionsid:
+        type: integer
+        format: int32
+      usersid:
+        type: integer
+        format: int32
+      answer:
+        type: string
+    title: ForgotPasswordsQuestionsUsersAnswersRequestDTO
   UsersRequestDTO:
     type: object
     properties:
