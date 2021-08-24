@@ -2,11 +2,11 @@ package org.waterproofingdata.wpdauth.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.waterproofingdata.wpdauth.dto.CustomMapper;
 import org.waterproofingdata.wpdauth.dto.UsersRequestDTO;
 import org.waterproofingdata.wpdauth.dto.UsersResponseDTO;
 import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.service.UsersService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +31,6 @@ public class UsersController {
 	  @Autowired
 	  private UsersService userService;
 
-	  @Autowired
-	  private ModelMapper modelMapper;
-
 	  @PostMapping("/login")
 	  @ApiOperation(value = "${UserController.login}")
 	  @ApiResponses(value = {//
@@ -52,7 +49,7 @@ public class UsersController {
 	      @ApiResponse(code = 403, message = "Access denied"), //
 	      @ApiResponse(code = 422, message = "Username is already in use")})
 	  public String signup(@ApiParam("Signup User") @RequestBody UsersRequestDTO user) {
-	    return userService.signup(modelMapper.map(user, Users.class));
+	    return userService.signup(CustomMapper.map(user, Users.class));
 	  }
 
 	  @PostMapping("/activate")
@@ -77,7 +74,7 @@ public class UsersController {
 	      @ApiResponse(code = 404, message = "The user doesn't exist"), //
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO search(@ApiParam("Username") @PathVariable String username) {
-		  UsersResponseDTO urDTO = modelMapper.map(userService.search(username), UsersResponseDTO.class);
+		  UsersResponseDTO urDTO = CustomMapper.map(userService.search(username), UsersResponseDTO.class);
 		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
 		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
 		  return urDTO;
@@ -91,7 +88,7 @@ public class UsersController {
 	      @ApiResponse(code = 403, message = "Access denied"), //
 	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
 	  public UsersResponseDTO whoami(HttpServletRequest req) {
-		  UsersResponseDTO urDTO = modelMapper.map(userService.whoami(req), UsersResponseDTO.class);
+		  UsersResponseDTO urDTO = CustomMapper.map(userService.whoami(req), UsersResponseDTO.class);
 		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
 		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
 		  return urDTO;
