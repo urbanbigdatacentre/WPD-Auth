@@ -24,8 +24,8 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
 @RestController
-@RequestMapping("/forgotpassword")
-@Api(tags = "forgotpassword")
+@RequestMapping("/forgotpasswords")
+@Api(tags = "forgotpasswords")
 public class ForgotPasswordsController {
 	@Autowired
 	private ForgotPasswordsService forgotPasswordsService;
