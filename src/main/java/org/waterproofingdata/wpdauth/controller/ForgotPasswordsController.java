@@ -91,7 +91,7 @@ public class ForgotPasswordsController {
 	      @ApiResponse(code = 422, message = "Invalid answers supplied to login. Must have at least 2 correct ones.")})
 	  public String loginbyemailandanswers(//
 	      @ApiParam("Email") @RequestParam String email, //
-	      @ApiParam("Answers") @RequestParam List<ForgotPasswordsQuestionsUsersAnswersRequestDTO> answers) {
+	      @ApiParam("Answers") @RequestBody List<ForgotPasswordsQuestionsUsersAnswersRequestDTO> answers) {
 	    return forgotPasswordsService.loginByEmailAndAnswers(email, CustomMapper.mapAll(answers, ForgotPasswordsQuestionsUsersAnswers.class));
 	  }	  
 }

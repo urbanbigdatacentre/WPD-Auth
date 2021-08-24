@@ -48,12 +48,14 @@ paths:
       produces:
         - '*/*'
       parameters:
-        - name: answers
-          in: query
+        - in: body
+          name: answers
           description: Answers
           required: false
-          type: string
-          allowEmptyValue: false
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ForgotPasswordsQuestionsUsersAnswersRequestDTO'
         - name: email
           in: query
           description: Email
