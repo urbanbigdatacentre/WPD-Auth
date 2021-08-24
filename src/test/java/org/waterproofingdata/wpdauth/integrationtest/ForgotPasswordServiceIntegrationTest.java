@@ -7,17 +7,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.waterproofingdata.wpdauth.model.ForgotPasswordQuestions;
-import org.waterproofingdata.wpdauth.service.ForgotPasswordService;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordsQuestions;
+import org.waterproofingdata.wpdauth.service.ForgotPasswordsService;
 
 @SpringBootTest
 public class ForgotPasswordServiceIntegrationTest {
 	@Autowired
-	private ForgotPasswordService forgotPasswordService;
+	private ForgotPasswordsService forgotPasswordService;
 	
 	@Test
 	public void testFindAllForgotPasswordQuestions() {
-		List<ForgotPasswordQuestions> r = forgotPasswordService.findAllForgotPasswordQuestions();
+		List<ForgotPasswordsQuestions> r = forgotPasswordService.findAllForgotPasswordQuestions();
 		assertTrue(r.size() > 0);
 	}
 	

@@ -10,21 +10,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "forgotpassword_keys")
+@Entity(name = "forgotpassword_questions")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ForgotPasswordKeys {
+public class ForgotPasswordsQuestions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
-    private String email;
+    private String question;
 
     @Column(nullable = false)
-    private String key;
-
-    @Column(nullable = false)
-    private String created_at;
+    private Integer active;
 }

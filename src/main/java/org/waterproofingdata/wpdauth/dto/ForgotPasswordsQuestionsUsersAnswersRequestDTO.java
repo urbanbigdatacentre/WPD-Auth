@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ForgotPasswordQuestionsUsersAnswersRequestDTO {
+public class ForgotPasswordsQuestionsUsersAnswersRequestDTO {
     @ApiModelProperty(position = 0)
     private Integer id;
 

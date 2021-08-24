@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ForgotPasswordQuestionsUsersAnswers {
+public class ForgotPasswordsQuestionsUsersAnswers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

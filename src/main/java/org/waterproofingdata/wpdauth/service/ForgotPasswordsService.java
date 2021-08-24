@@ -10,26 +10,26 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.waterproofingdata.wpdauth.exception.CustomException;
-import org.waterproofingdata.wpdauth.model.ForgotPasswordKeys;
-import org.waterproofingdata.wpdauth.model.ForgotPasswordQuestions;
-import org.waterproofingdata.wpdauth.model.ForgotPasswordQuestionsUsersAnswers;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordsKeys;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordsQuestions;
+import org.waterproofingdata.wpdauth.model.ForgotPasswordsQuestionsUsersAnswers;
 import org.waterproofingdata.wpdauth.model.Users;
-import org.waterproofingdata.wpdauth.repository.ForgotPasswordKeysRepository;
-import org.waterproofingdata.wpdauth.repository.ForgotPasswordQuestionsRepository;
-import org.waterproofingdata.wpdauth.repository.ForgotPasswordQuestionsUsersAnswersRepository;
+import org.waterproofingdata.wpdauth.repository.ForgotPasswordsKeysRepository;
+import org.waterproofingdata.wpdauth.repository.ForgotPasswordsQuestionsRepository;
+import org.waterproofingdata.wpdauth.repository.ForgotPasswordsQuestionsUsersAnswersRepository;
 import org.waterproofingdata.wpdauth.repository.UsersRepository;
 import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 
 @Service
-public class ForgotPasswordService {
+public class ForgotPasswordsService {
 	@Autowired
-	private ForgotPasswordKeysRepository forgotPasswordKeysRepository;
+	private ForgotPasswordsKeysRepository forgotPasswordsKeysRepository;
 	
 	@Autowired
-	private ForgotPasswordQuestionsRepository forgotPasswordQuestionsRepository;
+	private ForgotPasswordsQuestionsRepository forgotPasswordsQuestionsRepository;
 	
 	@Autowired
-	private ForgotPasswordQuestionsUsersAnswersRepository forgotPasswordQuestionsUsersAnswersRepository;
+	private ForgotPasswordsQuestionsUsersAnswersRepository forgotPasswordsQuestionsUsersAnswersRepository;
 	
 	@Autowired
 	private UsersRepository usersRepository;
@@ -53,10 +53,10 @@ public class ForgotPasswordService {
 		String key = String.format("%04d", rand.nextInt(10000));
 		//System.out.printf("%04d%n", rand.nextInt(10000));
 		
-		ForgotPasswordKeys entity = new ForgotPasswordKeys();
+		ForgotPasswordsKeys entity = new ForgotPasswordsKeys();
 		entity.setEmail(email);
 		entity.setKey(key);
-		forgotPasswordKeysRepository.save(entity);
+		forgotPasswordsKeysRepository.save(entity);
 		
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setFrom("noreply@wp6.com");
@@ -67,7 +67,7 @@ public class ForgotPasswordService {
 	}
 	
 	public String loginByEmailAndKey(String email, String key) {
-		ForgotPasswordKeys entity = forgotPasswordKeysRepository.findTodayRecordByEmailANDKey(email, key);
+		ForgotPasswordsKeys entity = forgotPasswordsKeysRepository.findTodayRecordByEmailANDKey(email, key);
 		if (entity == null) {
 			throw new CustomException("The email and forgot key don't exist", HttpStatus.NOT_FOUND);
 		}
@@ -90,12 +90,12 @@ public class ForgotPasswordService {
 	    usersRepository.save(user);
 	}
 	
-	public List<ForgotPasswordQuestions> findAllForgotPasswordQuestions() {
-		return forgotPasswordQuestionsRepository.findAll();
+	public List<ForgotPasswordsQuestions> findAllForgotPasswordQuestions() {
+		return forgotPasswordsQuestionsRepository.findAll();
 	}
 	
-	public void saveForgotPasswordQuestionsUsersAnswers(ForgotPasswordQuestionsUsersAnswers forgotPasswordQuestionsUsersAnswer) {
-		if (!forgotPasswordQuestionsRepository.existsById(forgotPasswordQuestionsUsersAnswer.getForgotpasswordquestionsid())) {
+	public void saveForgotPasswordQuestionsUsersAnswers(ForgotPasswordsQuestionsUsersAnswers forgotPasswordQuestionsUsersAnswer) {
+		if (!forgotPasswordsQuestionsRepository.existsById(forgotPasswordQuestionsUsersAnswer.getForgotpasswordquestionsid())) {
 			throw new CustomException("The Forgot Password Questions provided doesn't exist", HttpStatus.NOT_FOUND);
 		}
 		
@@ -103,18 +103,18 @@ public class ForgotPasswordService {
 			throw new CustomException("The User provided doesn't exist", HttpStatus.NOT_FOUND);
 		}
 		
-		forgotPasswordQuestionsUsersAnswersRepository.save(forgotPasswordQuestionsUsersAnswer);
+		forgotPasswordsQuestionsUsersAnswersRepository.save(forgotPasswordQuestionsUsersAnswer);
 	}
 	
-	public String loginByEmailAndAnswers(String email, List<ForgotPasswordQuestionsUsersAnswers> answers) {
+	public String loginByEmailAndAnswers(String email, List<ForgotPasswordsQuestionsUsersAnswers> answers) {
 		Users user = usersRepository.findByEmail(email);
 	    if (user == null) {
 	    	throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
 	    }
 	    
 	    int correctAnswers = 0;
-	    for (ForgotPasswordQuestionsUsersAnswers answer : answers) {
-	    	ForgotPasswordQuestionsUsersAnswers answerComparison = forgotPasswordQuestionsUsersAnswersRepository.findByForgotPasswordQuestionsAndUserid(answer.getForgotpasswordquestionsid(), answer.getUsersid());
+	    for (ForgotPasswordsQuestionsUsersAnswers answer : answers) {
+	    	ForgotPasswordsQuestionsUsersAnswers answerComparison = forgotPasswordsQuestionsUsersAnswersRepository.findByForgotPasswordQuestionsAndUserid(answer.getForgotpasswordquestionsid(), answer.getUsersid());
 	    	if (answerComparison == null) {
 	    		throw new CustomException("The comparison answer doesn't exist", HttpStatus.NOT_FOUND);
 	    	}
