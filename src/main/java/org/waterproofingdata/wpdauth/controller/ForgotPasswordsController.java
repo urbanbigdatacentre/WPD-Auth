@@ -5,6 +5,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,7 +63,7 @@ public class ForgotPasswordsController {
 	    forgotPasswordsService.passwordUpdateByEmail(email, newPassword);
 	  }	
 	  
-	  @PostMapping("/findallforgotpasswordquestions")
+	  @GetMapping("/findallforgotpasswordquestions")
 	  @ApiOperation(value = "${ForgotPasswordsController.findallforgotpasswordquestions}")
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong")})
