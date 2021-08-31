@@ -34,7 +34,7 @@ public class WpdauthApplication implements CommandLineRunner {
 			Users admin = new Users();
 		    admin.setUsername("admin");
 		    admin.setPassword("admin");
-		    admin.setEmail("admin@email.com");
+		    admin.setEmail("admin@wpd.com");
 		    admin.setActive(1);
 		    admin.setRoles(new ArrayList<Roles>(Arrays.asList(Roles.ROLE_ADMIN)));
 		
