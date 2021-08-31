@@ -40,17 +40,6 @@ public class WpdauthApplication implements CommandLineRunner {
 		
 		    userService.signup(admin);
 		}
-	
-		if (!userService.existsByUsername("client")) {
-		    Users client = new Users();
-		    client.setUsername("client");
-		    client.setPassword("client");
-		    client.setEmail("client@email.com");
-		    client.setActive(1);
-		    client.setRoles(new ArrayList<Roles>(Arrays.asList(Roles.ROLE_CLIENT)));
-		
-		    userService.signup(client);
-		}
 	}
 
 }
