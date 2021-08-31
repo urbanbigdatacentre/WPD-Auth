@@ -17,6 +17,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 	  Users findByEmail(String email);
 
 	  @Transactional
-	  @Query(value = "UPDATE users SET active = ?2 WHERE username = ?1", nativeQuery = true)
+	  @Query(value = "UPDATE auth.users SET active = ?2 WHERE username = ?1", nativeQuery = true)
 	  void activateByUsername(String username, Integer active);
 }

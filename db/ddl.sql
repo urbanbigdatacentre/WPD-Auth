@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS auth.users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -9,50 +9,50 @@ CREATE TABLE IF NOT EXISTS users (
     active INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS forgotpassword_keys ( 
+CREATE TABLE IF NOT EXISTS auth.forgotpassword_keys ( 
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     key VARCHAR(4) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS forgotpassword_questions ( 
+CREATE TABLE IF NOT EXISTS auth.forgotpassword_questions ( 
     id SERIAL PRIMARY KEY,
     question VARCHAR(255) NOT NULL,
     active INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS forgotpassword_questions_users_answers ( 
+CREATE TABLE IF NOT EXISTS auth.forgotpassword_questions_users_answers ( 
     id SERIAL PRIMARY KEY,
     forgotpassword_questions_id INT NOT NULL,
     users_id INT NOT NULL,
     answer VARCHAR(255) NOT NULL,
-    FOREIGN KEY (forgotpassword_questions_id) REFERENCES forgotpassword_questions (id),
-    FOREIGN KEY (users_id) REFERENCES users (id)
+    FOREIGN KEY (forgotpassword_questions_id) REFERENCES auth.forgotpassword_questions (id),
+    FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
 
-CREATE TABLE IF NOT EXISTS roles (
+CREATE TABLE IF NOT EXISTS auth.roles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     active INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS users_roles ( 
+CREATE TABLE IF NOT EXISTS auth.users_roles ( 
     users_id INT NOT NULL,
     roles INT NOT NULL,
-    FOREIGN KEY (users_id) REFERENCES users (id)
+    FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
 
-CREATE TABLE IF NOT EXISTS users_rolesprovider_activationkey ( 
+CREATE TABLE IF NOT EXISTS auth.users_rolesprovider_activationkey ( 
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     roles_id INT NOT NULL,
     activationkey uuid NOT NULL,
-    FOREIGN KEY (users_id) REFERENCES users (id),
-    FOREIGN KEY (roles_id) REFERENCES roles (id)
+    FOREIGN KEY (users_id) REFERENCES auth.users (id),
+    FOREIGN KEY (roles_id) REFERENCES auth.roles (id)
 );
 
-CREATE TABLE IF NOT EXISTS educemaden_organizations (
+CREATE TABLE IF NOT EXISTS auth.educemaden_organizations (
     id INT NOT NULL,
     active VARCHAR(20) NULL,
     name VARCHAR(255) NOT NULL,
@@ -66,10 +66,10 @@ CREATE TABLE IF NOT EXISTS educemaden_organizations (
     responsible varchar(50) NULL
 );
 
-CREATE TABLE IF NOT EXISTS users_educemaden_organizations ( 
+CREATE TABLE IF NOT EXISTS auth.users_educemaden_organizations ( 
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     educemaden_organizations_id INT NOT NULL,
     activationkey uuid NOT NULL,
-    FOREIGN KEY (users_id) REFERENCES users (id)
+    FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );

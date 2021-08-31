@@ -37,9 +37,15 @@ Once the dependencies are properly installed, follow the steps below:
   postgres=# \conninfo
   postgres=# CREATE DATABASE wpdauth;
   postgres=# \c wpdauth
+  wpdauth=# CREATE SCHEMA auth;
   wpdauth=# CREATE EXTENSION "uuid-ossp";
   wpdauth=# \i db/ddl.sql
   wpdauth=# \i db/sys_config.sql
+  wpdauth=# create user uwpdauth;
+  wpdauth=# alter user uwpdauth with encrypted password '<your really secure password>';
+  wpdauth=# GRANT USAGE ON SCHEMA auth TO uwpdauth; 
+  wpdauth=# GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO uwpdauth;
+  wpdauth=# GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA auth TO uwpdauth;
   wpdauth=# \q
 ```
 
