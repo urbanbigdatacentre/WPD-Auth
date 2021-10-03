@@ -31,6 +31,15 @@ public class UsersController {
 	  @Autowired
 	  private UsersService userService;
 
+/*
+   @ApiParam(
+    name =  "firstName",
+    type = "String",
+    value = "First Name of the user",
+    example = "Vatsal",
+    required = true)
+  @RequestParam String firstName)  	  
+ */
 	  @PostMapping("/login")
 	  @ApiOperation(value = "${UserController.login}")
 	  @ApiResponses(value = {//
@@ -76,7 +85,7 @@ public class UsersController {
 	  public UsersResponseDTO search(@ApiParam("Username") @PathVariable String username) {
 		  UsersResponseDTO urDTO = CustomMapper.map(userService.search(username), UsersResponseDTO.class);
 		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
-		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  urDTO.setProviderActivationKey(userService.findProviderActivationKeyById(urDTO.getId()));
 		  return urDTO;
 	  }
 
@@ -90,7 +99,7 @@ public class UsersController {
 	  public UsersResponseDTO whoami(HttpServletRequest req) {
 		  UsersResponseDTO urDTO = CustomMapper.map(userService.whoami(req), UsersResponseDTO.class);
 		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
-		  urDTO.setRolesProviderActivationKeys(userService.findRolesproviderActivationKeysById(urDTO.getId()));
+		  urDTO.setProviderActivationKey(userService.findProviderActivationKeyById(urDTO.getId()));
 		  return urDTO;
 	  }
 

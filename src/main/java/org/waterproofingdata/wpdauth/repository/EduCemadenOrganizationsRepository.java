@@ -10,6 +10,8 @@ import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
 public interface EduCemadenOrganizationsRepository extends JpaRepository<EduCemadenOrganizations, Integer> {
 	EduCemadenOrganizations findByPhone(String phone);
 	
+	EduCemadenOrganizations findByEmail(String email);
+	
 	@Query(value = "SELECT e.*, ueo.activationkey FROM auth.educemaden_organizations e INNER JOIN auth.users_educemaden_organizations ueo ON e.id = ueo.educemaden_organizations_id WHERE ueo.users_id = ?1", nativeQuery = true)
 	EduCemadenOrganizations findByUserId(Integer userid);
 	

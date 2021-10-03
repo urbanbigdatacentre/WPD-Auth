@@ -47,4 +47,7 @@ public class EduCemadenOrganizations {
     private String responsible;
     
     private String activationkey;
+    
+    @Column(nullable = false)
+    private String email;
 }

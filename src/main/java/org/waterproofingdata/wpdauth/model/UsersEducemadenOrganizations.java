@@ -10,22 +10,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Entity(name = "users_rolesprovider_activationkey")
+@Entity(name = "users_educemaden_organizations")
 @Getter
 @Setter
 @NoArgsConstructor
-public class UsersRolesproviderActivationKey {
+public class UsersEducemadenOrganizations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, name="users_id")
     private Integer usersid;
-
-    @Column(nullable = false, name="roles_id")
-    private Integer rolesid;
+    
+    @Column(nullable = false, name="educemaden_organizations_id")
+    private Integer educemadenorganizationsid;
 
     @Column(nullable = false)
     private String activationkey;
+    
+    @Column(nullable = false)
+    private Integer active;
 }

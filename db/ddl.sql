@@ -1,17 +1,24 @@
 CREATE TABLE IF NOT EXISTS auth.users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
+    nickname VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    firstname VARCHAR(100) NULL,
-    surname VARCHAR(100) NULL,
+    dateofborn DATE NULL,
+    gender CHAR(1) NULL,
+    state CHAR(2) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    institutiontype CHAR(1) NULL,
+    institution VARCHAR(255) NULL,
+    securityquestion VARCHAR(255) NULL,
+    securityanswer VARCHAR(255) NULL,
+    termsofusage BOOLEAN NOT NULL,
     avatar VARCHAR(100) NULL,
     active INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS auth.forgotpassword_keys ( 
     id SERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
     key VARCHAR(4) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -43,13 +50,11 @@ CREATE TABLE IF NOT EXISTS auth.users_roles (
     FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
 
-CREATE TABLE IF NOT EXISTS auth.users_rolesprovider_activationkey ( 
+CREATE TABLE IF NOT EXISTS auth.users_provider_activationkey ( 
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
-    roles_id INT NOT NULL,
-    activationkey uuid NOT NULL,
-    FOREIGN KEY (users_id) REFERENCES auth.users (id),
-    FOREIGN KEY (roles_id) REFERENCES auth.roles (id)
+    activationkey uuid UNIQUE NOT NULL,
+    FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
 
 CREATE TABLE IF NOT EXISTS auth.educemaden_organizations (
@@ -63,13 +68,15 @@ CREATE TABLE IF NOT EXISTS auth.educemaden_organizations (
     website varchar(255) NULL,
     login varchar(50) NULL,
     address varchar(50) NULL,
-    responsible varchar(50) NULL
+    responsible varchar(50) NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS auth.users_educemaden_organizations ( 
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     educemaden_organizations_id INT NOT NULL,
-    activationkey uuid NOT NULL,
+    activationkey uuid UNIQUE NOT NULL,
+    active INT NOT NULL,
     FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );

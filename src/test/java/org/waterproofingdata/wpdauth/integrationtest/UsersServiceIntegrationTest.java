@@ -47,10 +47,12 @@ public class UsersServiceIntegrationTest {
 	public void testRandomUserSignup() {
 		Users u = new Users();
 		String uName = String.format("user%s", UUID.randomUUID().toString());
-		String uEmail = String.format("%s@email.com", uName);
 		u.setUsername(uName);
+		u.setNickname(uName);		
 		u.setPassword(UUID.randomUUID().toString());
-		u.setEmail(uEmail);
+		u.setState("SP");
+		u.setCity("São Paulo");
+		u.setTermsofusage(true);
 		u.setRoles(new ArrayList<Roles>(Arrays.asList(Roles.ROLE_CLIENT)));
 		String uJson = new Gson().toJson(u);
 		

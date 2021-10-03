@@ -33,8 +33,11 @@ public class WpdauthApplication implements CommandLineRunner {
 		if (!userService.existsByUsername("admin")) {
 			Users admin = new Users();
 		    admin.setUsername("admin");
+		    admin.setNickname("admin");
 		    admin.setPassword("admin");
-		    admin.setEmail("admin@wpd.com");
+		    admin.setState("SP");
+		    admin.setCity("São Paulo");
+		    admin.setTermsofusage(true);
 		    admin.setActive(1);
 		    admin.setRoles(new ArrayList<Roles>(Arrays.asList(Roles.ROLE_ADMIN)));
 		

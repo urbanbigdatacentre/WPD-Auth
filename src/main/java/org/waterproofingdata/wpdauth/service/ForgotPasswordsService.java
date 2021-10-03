@@ -13,6 +13,7 @@ import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.ForgotPasswordsKeys;
 import org.waterproofingdata.wpdauth.model.ForgotPasswordsQuestions;
 import org.waterproofingdata.wpdauth.model.ForgotPasswordsQuestionsUsersAnswers;
+import org.waterproofingdata.wpdauth.model.Roles;
 import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.repository.ForgotPasswordsKeysRepository;
 import org.waterproofingdata.wpdauth.repository.ForgotPasswordsQuestionsRepository;
@@ -43,10 +44,10 @@ public class ForgotPasswordsService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     
-	public void sendKeyByEmail(String email) {
-		Users user = usersRepository.findByEmail(email);
+	public void sendKeyByEmail(String email, String username) {
+		Users user = usersRepository.findByUsername(username);
 	    if (user == null) {
-		      throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
+		      throw new CustomException("The username doesn't exist", HttpStatus.NOT_FOUND);
 	    }		
 		
 		Random rand = new Random();
@@ -54,7 +55,7 @@ public class ForgotPasswordsService {
 		//System.out.printf("%04d%n", rand.nextInt(10000));
 		
 		ForgotPasswordsKeys entity = new ForgotPasswordsKeys();
-		entity.setEmail(email);
+		entity.setUsername(username);
 		entity.setKey(key);
 		forgotPasswordsKeysRepository.save(entity);
 		
@@ -66,25 +67,25 @@ public class ForgotPasswordsService {
         mailSender.send(message);		
 	}
 	
-	public String loginByEmailAndKey(String email, String key) {
-		ForgotPasswordsKeys entity = forgotPasswordsKeysRepository.findTodayRecordByEmailANDKey(email, key);
+	public String loginByUsernameAndKey(String username, String key) {
+		ForgotPasswordsKeys entity = forgotPasswordsKeysRepository.findTodayRecordByUsernameANDKey(username, key);
 		if (entity == null) {
-			throw new CustomException("The email and forgot key don't exist", HttpStatus.NOT_FOUND);
+			throw new CustomException("The username and forgot key don't exist", HttpStatus.NOT_FOUND);
 		}
 		
-		Users user = usersRepository.findByEmail(email);
+		Users user = usersRepository.findByUsername(username);
 	    if (user == null) {
-		      throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
-	    }		
-		
-	    String username = user.getUsername();
-		return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
+		      throw new CustomException("The username doesn't exist", HttpStatus.NOT_FOUND);
+	    }
+	    
+	    List<Roles> roles = user.getRoles();
+		return jwtTokenProvider.createToken(username, roles);
 	}
 	
-	public void passwordUpdateByEmail(String email, String newPassword) {
-		Users user = usersRepository.findByEmail(email);
+	public void passwordUpdateByUsername(String username, String newPassword) {
+		Users user = usersRepository.findByUsername(username);
 	    if (user == null) {
-		      throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
+		      throw new CustomException("The username doesn't exist", HttpStatus.NOT_FOUND);
 	    }
 	    user.setPassword(passwordEncoder.encode(newPassword));
 	    usersRepository.save(user);
@@ -106,11 +107,12 @@ public class ForgotPasswordsService {
 		forgotPasswordsQuestionsUsersAnswersRepository.save(forgotPasswordQuestionsUsersAnswer);
 	}
 	
-	public String loginByEmailAndAnswers(String email, List<ForgotPasswordsQuestionsUsersAnswers> answers) {
-		Users user = usersRepository.findByEmail(email);
+	public String loginByUsernameAndAnswers(String username, List<ForgotPasswordsQuestionsUsersAnswers> answers) {
+		Users user = usersRepository.findByUsername(username);
 	    if (user == null) {
-	    	throw new CustomException("The user email doesn't exist", HttpStatus.NOT_FOUND);
+	    	throw new CustomException("The username doesn't exist", HttpStatus.NOT_FOUND);
 	    }
+	    List<Roles> roles = user.getRoles();
 	    
 	    int correctAnswers = 0;
 	    for (ForgotPasswordsQuestionsUsersAnswers answer : answers) {
@@ -127,7 +129,6 @@ public class ForgotPasswordsService {
 	    	throw new CustomException("Invalid answers supplied to login. Must have at least 2 correct ones.", HttpStatus.UNPROCESSABLE_ENTITY);
 	    }
 		
-	    String username = user.getUsername();
-		return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
+		return jwtTokenProvider.createToken(username, roles);
 	}
 }
