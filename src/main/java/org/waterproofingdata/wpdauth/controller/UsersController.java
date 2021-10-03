@@ -60,9 +60,19 @@ public class UsersController {
 	  public String signup(@ApiParam("Signup User") @RequestBody UsersRequestDTO user) {
 	    return userService.signup(CustomMapper.map(user, Users.class));
 	  }
+	  
+	  @PostMapping("/sendadminkeybyemailcemaden")
+	  @ApiOperation(value = "${UserController.sendadminkeybyemailcemaden}")
+	  @ApiResponses(value = {//
+	      @ApiResponse(code = 400, message = "Something went wrong"), //
+	      @ApiResponse(code = 403, message = "Access denied"), //
+	      @ApiResponse(code = 422, message = "Username is already in use")})
+	  public void sendadminkeybyemailcemaden(@ApiParam("Emailcemaden") @PathVariable String emailcemaden, @ApiParam("Username") @PathVariable String username) {
+	    userService.sendAdminKeyByEmailCemaden(emailcemaden, username);
+	  }	  
 
 	  @PostMapping("/activate")
-	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+	  @PreAuthorize("hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
 	  @ApiOperation(value = "${UserController.activate}", authorizations = { @Authorization(value="apiKey") })
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //

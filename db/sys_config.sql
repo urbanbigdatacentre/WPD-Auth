@@ -1,8 +1,8 @@
 DO $$
 BEGIN
-    INSERT INTO auth.roles(name, active) VALUES ('ROLE_ADMIN', 1);
-    INSERT INTO auth.roles(name, active) VALUES ('ROLE_INSTITUTION', 1);
-    INSERT INTO auth.roles(name, active) VALUES ('ROLE_CLIENT', 1);
+    INSERT INTO auth.roles(id, name, active) VALUES (0, 'ROLE_ADMIN', 1);
+    INSERT INTO auth.roles(id, name, active) VALUES (1, 'ROLE_INSTITUTION', 1);
+    INSERT INTO auth.roles(id, name, active) VALUES (2, 'ROLE_CLIENT', 1);
 
     INSERT INTO auth.forgotpassword_questions(question, active) VALUES ('Qual a sua cor predileta?', 1);
     INSERT INTO auth.forgotpassword_questions(question, active) VALUES ('Qual foi o seu livro predileto?', 1);

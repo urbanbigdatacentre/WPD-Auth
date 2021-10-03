@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS auth.forgotpassword_questions_users_answers (
 );
 
 CREATE TABLE IF NOT EXISTS auth.roles (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     active INT NOT NULL
 );
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS auth.users_roles (
 CREATE TABLE IF NOT EXISTS auth.users_provider_activationkey ( 
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
-    activationkey uuid UNIQUE NOT NULL,
+    activationkey varchar(50) UNIQUE NOT NULL,
     FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS auth.users_educemaden_organizations (
     id SERIAL PRIMARY KEY,
     users_id INT NOT NULL,
     educemaden_organizations_id INT NOT NULL,
-    activationkey uuid UNIQUE NOT NULL,
+    activationkey varchar(50) UNIQUE NOT NULL,
     active INT NOT NULL,
     FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );

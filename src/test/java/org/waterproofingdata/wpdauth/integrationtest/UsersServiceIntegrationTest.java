@@ -18,12 +18,36 @@ import org.springframework.http.HttpStatus;
 import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.Roles;
 import org.waterproofingdata.wpdauth.model.Users;
+import org.waterproofingdata.wpdauth.model.UsersEducemadenOrganizations;
+import org.waterproofingdata.wpdauth.model.UsersProviderActivationKey;
+import org.waterproofingdata.wpdauth.repository.UsersEducemadenOrganizationsRepository;
+import org.waterproofingdata.wpdauth.repository.UsersProviderActivationKeyRepository;
 import org.waterproofingdata.wpdauth.service.UsersService;
 
 @SpringBootTest
 public class UsersServiceIntegrationTest {
 	@Autowired
 	private UsersService usersService;
+	
+	@Autowired
+	private UsersEducemadenOrganizationsRepository usersEducemadenOrganizationsRepository;
+	
+	@Autowired
+	private UsersProviderActivationKeyRepository usersProviderActivationKeyRepository;
+	
+	private Users setUpUserTest(String userNamePrefix, Roles role) {
+		Users u = new Users();
+		String uName = String.format("%s%s", userNamePrefix, UUID.randomUUID().toString());
+		u.setUsername(uName);
+		u.setNickname(uName);		
+		u.setPassword(UUID.randomUUID().toString());
+		u.setState("SP");
+		u.setCity("São Paulo");
+		u.setTermsofusage(true);
+		u.setRoles(new ArrayList<Roles>(Arrays.asList(role)));
+		String uJson = new Gson().toJson(u);
+		return u;
+	}
 	
 	@Test
 	public void testInvalidLogin() {
@@ -34,7 +58,7 @@ public class UsersServiceIntegrationTest {
 		);
 		
 		assertTrue(thrown.getMessage().contains("Invalid username/password supplied"));
-		assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, thrown.getHttpStatus());
+		assertEquals(HttpStatus.NOT_FOUND, thrown.getHttpStatus());
 	}
 	
 	@Test
@@ -44,19 +68,40 @@ public class UsersServiceIntegrationTest {
 	}
 	
 	@Test 
+	public void testAdmUserSearch() {
+		Users u = usersService.search("admin");
+		assertEquals("admin", u.getUsername());
+		assertEquals("admin", u.getNickname());
+		assertEquals("SP", u.getState());
+		assertEquals("São Paulo", u.getCity());
+		assertEquals(true, u.getTermsofusage());
+		assertEquals(1, u.getActive());
+		assertEquals(Roles.ROLE_ADMIN, u.getRoles().get(0));		
+	}
+	
+	@Test 
 	public void testRandomUserSignup() {
-		Users u = new Users();
-		String uName = String.format("user%s", UUID.randomUUID().toString());
-		u.setUsername(uName);
-		u.setNickname(uName);		
-		u.setPassword(UUID.randomUUID().toString());
-		u.setState("SP");
-		u.setCity("São Paulo");
-		u.setTermsofusage(true);
-		u.setRoles(new ArrayList<Roles>(Arrays.asList(Roles.ROLE_CLIENT)));
-		String uJson = new Gson().toJson(u);
-		
+		Users u = setUpUserTest("user_", Roles.ROLE_CLIENT);
 		String signup = usersService.signup(u);
 		assertNotNull(signup, "Signup token returned from usersService.signup(user) should not be null");
 	}
+	
+	@Test 
+	public void testRandomUserInstitutionAndClientRegistration() {
+		Users userInst = setUpUserTest("user_institution_", Roles.ROLE_INSTITUTION);
+		String signup = usersService.signup(userInst);
+		assertNotNull(signup, "Signup token returned from usersService.signup(userInst) should not be null");
+		usersService.sendAdminKeyByEmailCemaden("danieldrb@gmail.com", userInst.getUsername());
+		Users userInstUpdated = usersService.search(userInst.getUsername());
+		UsersEducemadenOrganizations userInstUpdatedEducemadenOrg = usersEducemadenOrganizationsRepository.findByUsersid(userInstUpdated.getId());
+		String keyFromUserInst = userInstUpdatedEducemadenOrg.getActivationkey();
+		usersService.activate(userInstUpdated.getUsername(), keyFromUserInst);
+		
+		UsersProviderActivationKey userInstUpdatedProviderKey = usersProviderActivationKeyRepository.findByUsersid(userInstUpdated.getId());
+		String keyFromUserInstToUserClient = userInstUpdatedProviderKey.getActivationkey();
+		Users userClient = setUpUserTest("user_client_institution_",  Roles.ROLE_CLIENT);
+		String signup2 = usersService.signup(userClient);
+		assertNotNull(signup2, "Signup token returned from usersService.signup(userClient) should not be null");
+		usersService.activate(userClient.getUsername(), keyFromUserInstToUserClient);
+	}	
 }

@@ -70,7 +70,7 @@ public class UsersService {
 	      return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
 	    } 
 	    catch (AuthenticationException e) {
-	      throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+	      throw new CustomException("Invalid username/password supplied", HttpStatus.NOT_FOUND);
 	    }
 	  }
 
@@ -112,7 +112,7 @@ public class UsersService {
 			  throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
 		  }
 	  }
-
+	  
 	  public void sendAdminKeyByEmailCemaden(String emailcemaden, String username) {
 	    Users user = search(username);
 	    EduCemadenOrganizations eduCemadenOrganization = eduCemadenOrganizationsRepository.findByEmail(emailcemaden);
@@ -168,12 +168,12 @@ public class UsersService {
 		  else if (user.getRoles().get(0) == Roles.ROLE_CLIENT) {
 			  UsersProviderActivationKey userAdmProviderActivationKey = usersProviderActivationKeyRepository.findByActivationkey(activationkey);
 			  if (userAdmProviderActivationKey == null) {
-				  throw new CustomException("Activationkey not found.", HttpStatus.NOT_FOUND);
+				  throw new CustomException(String.format("Activationkey '%s' not found.", activationkey), HttpStatus.NOT_FOUND);
 			  }
 			  
-			  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUserIdAndActivated(user.getId());
+			  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUserIdAndActivated(userAdmProviderActivationKey.getUsersid());
 			  if (userAdmEducemadenOrganization == null) {
-				  throw new CustomException("ROLE_INSTITUTION Activationkey not found.", HttpStatus.NOT_FOUND);
+				  throw new CustomException("ROLE_INSTITUTION EduCemadenOrganization not found.", HttpStatus.NOT_FOUND);
 			  }
 			  
 			  usersRepository.activateByUsername(username, 1);
@@ -198,7 +198,11 @@ public class UsersService {
 	  }
 	  
 	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {
-	  	return eduCemadenOrganizationsRepository.findByUserId(userid); 
+		  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUserIdAndActivated(userid);
+		  if (userAdmEducemadenOrganization == null) {
+			  return null;
+		  }
+		  return eduCemadenOrganizationsRepository.getById(userAdmEducemadenOrganization.getEducemadenorganizationsid());
 	  }
 	  
 	  public UsersProviderActivationKey findProviderActivationKeyById(Integer usersid) {
