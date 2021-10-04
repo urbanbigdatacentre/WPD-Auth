@@ -31,68 +31,153 @@ public class UsersController {
 	  @Autowired
 	  private UsersService userService;
 
-/*
-   @ApiParam(
-    name =  "firstName",
-    type = "String",
-    value = "First Name of the user",
-    example = "Vatsal",
-    required = true)
-  @RequestParam String firstName)  	  
- */
 	  @PostMapping("/login")
-	  @ApiOperation(value = "${UserController.login}")
+	  @ApiOperation(
+		  value = "${UserController.login}",
+		  notes = "From a valid username and password, this method returns the JWT Token to be used in secure methods."
+	  )
 	  @ApiResponses(value = {//
-	      @ApiResponse(code = 400, message = "Something went wrong"), //
-	      @ApiResponse(code = 422, message = "Invalid username/password supplied")})
+		      @ApiResponse(code = 400, message = "Something went wrong"), //
+		      @ApiResponse(code = 404, message = "Invalid username/password supplied")
+	      }
+	  )
 	  public String login(//
-	      @ApiParam("Username") @RequestParam String username, //
-	      @ApiParam("Password") @RequestParam String password) {
-	    return userService.login(username, password);
+		      @ApiParam(
+	    		  name = "username",
+	    		  type = "String",
+	    		  value = "username of the user",
+	    		  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
+	    		  required = true
+		      ) 
+		      @RequestParam String username, //
+		      @ApiParam(
+				  name = "password",
+				  type = "String",
+				  value = "password of the user",
+				  example = "i.e. P@s5w0rD",
+				  required = true	    		  
+			  ) 
+		      @RequestParam String password
+		  ) {
+		  return userService.login(username, password);
 	  }
 
 	  @PostMapping("/signup")
-	  @ApiOperation(value = "${UserController.signup}")
+	  @ApiOperation(
+		  value = "${UserController.signup}",
+		  notes = "This the signup method to create new users. By defaul all users are created as inactive. To activate, the method ${UserController.activate} should be invoked."
+	  )
 	  @ApiResponses(value = {//
-	      @ApiResponse(code = 400, message = "Something went wrong"), //
-	      @ApiResponse(code = 403, message = "Access denied"), //
-	      @ApiResponse(code = 422, message = "Username is already in use")})
-	  public String signup(@ApiParam("Signup User") @RequestBody UsersRequestDTO user) {
-	    return userService.signup(CustomMapper.map(user, Users.class));
+		      @ApiResponse(code = 400, message = "Something went wrong"), //
+		      @ApiResponse(code = 422, message = "Required parameters should be provided")
+	      }
+	  )
+	  public String signup(
+			  @ApiParam(
+				  name = "user",
+				  value = "Signup User", 
+				  required = true
+			  ) 
+			  @RequestBody UsersRequestDTO user
+		  ) {
+		  return userService.signup(CustomMapper.map(user, Users.class));
 	  }
 	  
 	  @PostMapping("/sendadminkeybyemailcemaden")
-	  @ApiOperation(value = "${UserController.sendadminkeybyemailcemaden}")
+	  @PreAuthorize("hasRole('ROLE_INSTITUTION')")
+	  @ApiOperation(
+		  value = "${UserController.sendadminkeybyemailcemaden}",
+		  authorizations = {@Authorization(value="apiKey")},
+		  notes = "This method is used for role 'ROLE_INSTITUTION'. To activate these users, a key is sent to the EduCemandenOrg e-mail and the user should inform this key to proceed."
+	  )
 	  @ApiResponses(value = {//
-	      @ApiResponse(code = 400, message = "Something went wrong"), //
-	      @ApiResponse(code = 403, message = "Access denied"), //
-	      @ApiResponse(code = 422, message = "Username is already in use")})
-	  public void sendadminkeybyemailcemaden(@ApiParam("Emailcemaden") @PathVariable String emailcemaden, @ApiParam("Username") @PathVariable String username) {
-	    userService.sendAdminKeyByEmailCemaden(emailcemaden, username);
+		      @ApiResponse(code = 400, message = "Something went wrong"), //
+		      @ApiResponse(code = 403, message = "Access denied"), //
+		      @ApiResponse(code = 404, message = "User or Email Cemaden not found"), //
+		      @ApiResponse(code = 500, message = "Expired or invalid JWT token")
+	      }
+	  )
+	  public void sendadminkeybyemailcemaden(
+			  @ApiParam(
+	    		  name = "emailcemaden",
+	    		  type = "String",
+	    		  value = "Emailcemaden associated to the user",
+	    		  example = "The Cemaden e-mail registred in the database. The key will be sent to this e-mail, and the user should be inform this key to proceed.",
+	    		  required = true					  
+			  ) 
+			  @RequestParam String emailcemaden, //
+		      @ApiParam(
+	    		  name = "username",
+	    		  type = "String",
+	    		  value = "username of the user",
+	    		  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
+	    		  required = true
+			  ) 
+			  @RequestParam String username
+		  ) {
+		  userService.sendAdminKeyByEmailCemaden(emailcemaden, username);
 	  }	  
 
 	  @PostMapping("/activate")
 	  @PreAuthorize("hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
-	  @ApiOperation(value = "${UserController.activate}", authorizations = { @Authorization(value="apiKey") })
+	  @ApiOperation(
+		  value = "${UserController.activate}", 
+		  authorizations = { @Authorization(value="apiKey") },
+		  notes = "This is the user activation method."
+	  )
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //
 	      @ApiResponse(code = 403, message = "Access denied"), //
-	      @ApiResponse(code = 404, message = "The user doesn't exist"), //
-	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-	  public String activate(@ApiParam("Username") @PathVariable String username, @ApiParam("ActivationKey") @PathVariable String activationkey) {
-	    userService.activate(username, activationkey);
-	    return username;
+	      @ApiResponse(code = 422, message = "User or ActivationKey registration issues"), //
+	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")
+	  	}
+	  )
+	  public String activate(
+			  @ApiParam(
+				  name = "username",
+				  type = "String",
+				  value = "username of the user",
+				  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
+				  required = true
+			  ) 
+			  @RequestParam String username, // 
+			  @ApiParam(
+				  name = "activationkey",
+				  type = "String",
+				  value = "Activation Key to activate the user",
+				  example = "If user belongs to 'ROLE_INSTITUTION' the key should be collected from the emailcemaden, previously sent by ${UserController.sendadminkeybyemailcemaden}. If the user belongs to 'ROLE_CLIENT' the key should be provided by a 'ROLE_INSTITUTION' valid user.",
+				  required = true					  
+			  ) 
+			  @RequestParam String activationkey
+		  ) {
+		  userService.activate(username, activationkey);
+		  return username;
 	  }
 
 	  @GetMapping(value = "/{username}")
 	  @PreAuthorize("hasRole('ROLE_ADMIN')")
-	  @ApiOperation(value = "${UserController.search}", response = UsersResponseDTO.class, authorizations = { @Authorization(value="apiKey") })
+	  @ApiOperation(
+		  value = "${UserController.search}", 
+		  response = UsersResponseDTO.class, 
+		  authorizations = { @Authorization(value="apiKey") },
+		  notes = "This is the user search method by username."
+	  )
 	  @ApiResponses(value = {//
-	      @ApiResponse(code = 400, message = "Something went wrong"), //
-	      @ApiResponse(code = 403, message = "Access denied"), //
-	      @ApiResponse(code = 404, message = "The user doesn't exist"), //
-	      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-	  public UsersResponseDTO search(@ApiParam("Username") @PathVariable String username) {
+		      @ApiResponse(code = 403, message = "Access denied"), //
+		      @ApiResponse(code = 404, message = "The user doesn't exist"), //
+		      @ApiResponse(code = 500, message = "Expired or invalid JWT token")
+	      }
+	  )
+	  public UsersResponseDTO search(
+			  @ApiParam(
+					  name = "username",
+					  type = "String",
+					  value = "username of the user",
+					  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
+					  required = true
+				  ) 
+			  @RequestParam String username		  
+		  ) {
 		  UsersResponseDTO urDTO = CustomMapper.map(userService.search(username), UsersResponseDTO.class);
 		  urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
 		  urDTO.setProviderActivationKey(userService.findProviderActivationKeyById(urDTO.getId()));
@@ -101,7 +186,12 @@ public class UsersController {
 
 	  @GetMapping(value = "/me")
 	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-	  @ApiOperation(value = "${UserController.me}", response = UsersResponseDTO.class, authorizations = { @Authorization(value="apiKey") })
+	  @ApiOperation(
+		  value = "${UserController.me}", 
+		  response = UsersResponseDTO.class, 
+		  authorizations = { @Authorization(value="apiKey") },
+		  notes = "This is the user search method by token."
+	  )
 	  @ApiResponses(value = {//
 	      @ApiResponse(code = 400, message = "Something went wrong"), //
 	      @ApiResponse(code = 403, message = "Access denied"), //

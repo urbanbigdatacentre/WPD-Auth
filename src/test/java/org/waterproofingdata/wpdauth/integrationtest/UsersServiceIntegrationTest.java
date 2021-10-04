@@ -57,7 +57,7 @@ public class UsersServiceIntegrationTest {
 			"Expected usersService.login(xpto, xpto) to throw, but it didn't"
 		);
 		
-		assertTrue(thrown.getMessage().contains("Invalid username/password supplied"));
+		assertTrue(thrown.getMessage().contains("The user doesn't exist"));
 		assertEquals(HttpStatus.NOT_FOUND, thrown.getHttpStatus());
 	}
 	

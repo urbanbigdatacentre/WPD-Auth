@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,11 +67,18 @@ public class UsersService {
 
 	  public String login(String username, String password) {
 	    try {
-	      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-	      return jwtTokenProvider.createToken(username, usersRepository.findByUsername(username).getRoles());
+	    	Users u = search(username);
+	    	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+	    	return jwtTokenProvider.createToken(username, u.getRoles());
 	    } 
-	    catch (AuthenticationException e) {
-	      throw new CustomException("Invalid username/password supplied", HttpStatus.NOT_FOUND);
+	    catch (CustomException ce) {
+	    	throw ce;
+	    }
+	    catch (AuthenticationException ae) {
+	    	throw new CustomException("Invalid username/password supplied", HttpStatus.NOT_FOUND);
+	    }
+	    catch (Exception e) {
+	    	throw new CustomException("Something went wrong", HttpStatus.BAD_REQUEST);
 	    }
 	  }
 
@@ -105,8 +113,13 @@ public class UsersService {
 
 			  user.setPassword(passwordEncoder.encode(user.getPassword()));
 			  user.setActive(0);
-			  usersRepository.save(user);
-			  return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+			  try {
+				  usersRepository.save(user);
+				  return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+			  }
+			  catch (Exception e) {
+				  throw new CustomException("Something went wrong", HttpStatus.BAD_REQUEST);
+			  }
 		  } 
 		  else {
 			  throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -126,7 +139,12 @@ public class UsersService {
         message.setTo(emailcemaden); 
         message.setSubject("Envio de código para alteração de senha"); 
         message.setText(String.format("Olá! O usuário '%s' solicitou a ativação dele para ADMIN dessa Instituição, por isso você está recebendo esse código: '%s'. Se estiver correto, informe esse código ao solicitante e peça para entrar no aplicativo para prosseguir.", user.getNickname(), uuid));
-        mailSender.send(message);
+        try {
+        	mailSender.send(message);
+        }
+        catch (MailException me) {
+        	throw new CustomException("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
         
         UsersEducemadenOrganizations userEducemadenOrg = new UsersEducemadenOrganizations();
         userEducemadenOrg.setUsersid(user.getId());
@@ -189,7 +207,7 @@ public class UsersService {
 			  throw new CustomException("Admin users should be activated through database.", HttpStatus.UNPROCESSABLE_ENTITY);
 		  }
 		  else {
-			  throw new CustomException("There is a problem with this User registration and it can not be activated.", HttpStatus.UNPROCESSABLE_ENTITY); 
+			  throw new CustomException("There is a problem with this User registration and it can not be activated.", HttpStatus.BAD_REQUEST); 
 		  }
 	  }
 
