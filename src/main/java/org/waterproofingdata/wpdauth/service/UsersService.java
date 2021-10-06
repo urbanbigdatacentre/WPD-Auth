@@ -1,30 +1,27 @@
 package org.waterproofingdata.wpdauth.service;
 
-import java.util.List;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
-import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.model.Roles;
+import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.model.UsersEducemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.UsersProviderActivationKey;
 import org.waterproofingdata.wpdauth.repository.EduCemadenOrganizationsRepository;
 import org.waterproofingdata.wpdauth.repository.UsersEducemadenOrganizationsRepository;
-import org.waterproofingdata.wpdauth.repository.UsersRepository;
 import org.waterproofingdata.wpdauth.repository.UsersProviderActivationKeyRepository;
+import org.waterproofingdata.wpdauth.repository.UsersRepository;
 import org.waterproofingdata.wpdauth.security.JwtTokenProvider;
 
 @Service
@@ -50,8 +47,21 @@ public class UsersService {
 	  @Autowired
 	  private AuthenticationManager authenticationManager;
 	  
-	  @Autowired
-	  private JavaMailSender mailSender;	
+	  private void addNewUsersEducemadenOrganization(Integer userid, Integer educemadenorganizationsid, UUID uuid_activationkey, Roles role) {
+		  UsersEducemadenOrganizations userEducemadenOrg = new UsersEducemadenOrganizations();
+		  userEducemadenOrg.setUsersid(userid);
+		  userEducemadenOrg.setEducemadenorganizationsid(educemadenorganizationsid);
+		  userEducemadenOrg.setActivationkey(uuid_activationkey);
+		  usersEducemadenOrganizationsRepository.save(userEducemadenOrg);
+		  
+		  if (role == Roles.ROLE_INSTITUTION) {
+			  UUID new_uuid = UUID.randomUUID();
+			  UsersProviderActivationKey userRolesProviderActivationKey = new UsersProviderActivationKey();
+			  userRolesProviderActivationKey.setUsersid(userid);
+			  userRolesProviderActivationKey.setActivationkey(new_uuid);
+			  usersProviderActivationKeyRepository.save(userRolesProviderActivationKey);
+		  }
+	  }
 	  
 	  public boolean existsByUsername(String username) {
 		  return usersRepository.existsByUsername(username);
@@ -126,34 +136,6 @@ public class UsersService {
 		  }
 	  }
 	  
-	  public void sendAdminKeyByEmailCemaden(String emailcemaden, String username) {
-	    Users user = search(username);
-	    EduCemadenOrganizations eduCemadenOrganization = eduCemadenOrganizationsRepository.findByEmail(emailcemaden);
-		if (eduCemadenOrganization == null) {
-			throw new CustomException("Email Cemaden not found.", HttpStatus.NOT_FOUND);
-		}
-		
-		String uuid = UUID.randomUUID().toString();
-        SimpleMailMessage message = new SimpleMailMessage(); 
-        message.setFrom("noreply@wp6.com");
-        message.setTo(emailcemaden); 
-        message.setSubject("Envio de código para alteração de senha"); 
-        message.setText(String.format("Olá! O usuário '%s' solicitou a ativação dele para ADMIN dessa Instituição, por isso você está recebendo esse código: '%s'. Se estiver correto, informe esse código ao solicitante e peça para entrar no aplicativo para prosseguir.", user.getNickname(), uuid));
-        try {
-        	mailSender.send(message);
-        }
-        catch (MailException me) {
-        	throw new CustomException("Something went wrong", HttpStatus.BAD_REQUEST);
-        }
-        
-        UsersEducemadenOrganizations userEducemadenOrg = new UsersEducemadenOrganizations();
-        userEducemadenOrg.setUsersid(user.getId());
-        userEducemadenOrg.setEducemadenorganizationsid(eduCemadenOrganization.getId());
-        userEducemadenOrg.setActivationkey(uuid);
-        userEducemadenOrg.setActive(0);
-        usersEducemadenOrganizationsRepository.save(userEducemadenOrg);
-	  }
-	  
 	  public void activate(String username, String activationkey) {
 		  Users user = search(username);
 		  if (user.getActive() != 0) {
@@ -163,45 +145,26 @@ public class UsersService {
 			  throw new CustomException("User must have only one user.role", HttpStatus.UNPROCESSABLE_ENTITY);				  
 		  }
 		  
+		  UUID uuid_activationkey = UUID.fromString(activationkey);
 		  if (user.getRoles().get(0) == Roles.ROLE_INSTITUTION) {
-			  UsersEducemadenOrganizations userEducemadenOrganization = usersEducemadenOrganizationsRepository.findByActivationkey(activationkey); 
-			  if (userEducemadenOrganization == null) {
-				  throw new CustomException("ROLE_INSTITUTION Activationkey not found.", HttpStatus.NOT_FOUND);				  
+			  EduCemadenOrganizations eco = eduCemadenOrganizationsRepository.findByActivationkey(uuid_activationkey);
+			  if (eco == null) {
+				  throw new CustomException("EduCemadenOrganization Activationkey not found.", HttpStatus.NOT_FOUND);				  
 			  }
-			  else if (user.getId() != userEducemadenOrganization.getUsersid()) {
-				  throw new CustomException("Activationkey does not belong to the informed user", HttpStatus.UNPROCESSABLE_ENTITY);
-			  }
-			  
-			  userEducemadenOrganization.setActive(1);
-			  usersEducemadenOrganizationsRepository.save(userEducemadenOrganization);
-			  
 			  usersRepository.activateByUsername(username, 1);
-			  
-			  String uuid = UUID.randomUUID().toString();
-			  UsersProviderActivationKey userRolesProviderActivationKey = new UsersProviderActivationKey();
-			  userRolesProviderActivationKey.setUsersid(user.getId());
-			  userRolesProviderActivationKey.setActivationkey(uuid);
-			  usersProviderActivationKeyRepository.save(userRolesProviderActivationKey);
+			  addNewUsersEducemadenOrganization(user.getId(), eco.getId(), uuid_activationkey,  Roles.ROLE_INSTITUTION);
 		  }
 		  else if (user.getRoles().get(0) == Roles.ROLE_CLIENT) {
-			  UsersProviderActivationKey userAdmProviderActivationKey = usersProviderActivationKeyRepository.findByActivationkey(activationkey);
+			  UsersProviderActivationKey userAdmProviderActivationKey = usersProviderActivationKeyRepository.findByActivationkey(uuid_activationkey);
 			  if (userAdmProviderActivationKey == null) {
-				  throw new CustomException(String.format("Activationkey '%s' not found.", activationkey), HttpStatus.NOT_FOUND);
+				  throw new CustomException(String.format("userAdmProvider.ActivationKey '%s' not found.", activationkey), HttpStatus.NOT_FOUND);
 			  }
-			  
-			  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUserIdAndActivated(userAdmProviderActivationKey.getUsersid());
+			  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUsersid(userAdmProviderActivationKey.getUsersid());
 			  if (userAdmEducemadenOrganization == null) {
 				  throw new CustomException("ROLE_INSTITUTION EduCemadenOrganization not found.", HttpStatus.NOT_FOUND);
 			  }
-			  
 			  usersRepository.activateByUsername(username, 1);
-			  
-			  UsersEducemadenOrganizations userEducemadenOrg = new UsersEducemadenOrganizations();
-			  userEducemadenOrg.setUsersid(user.getId());
-			  userEducemadenOrg.setEducemadenorganizationsid(userAdmEducemadenOrganization.getEducemadenorganizationsid());
-			  userEducemadenOrg.setActivationkey(activationkey);
-			  userEducemadenOrg.setActive(1);
-			  usersEducemadenOrganizationsRepository.save(userEducemadenOrg);
+			  addNewUsersEducemadenOrganization(user.getId(), userAdmEducemadenOrganization.getEducemadenorganizationsid(), uuid_activationkey,  Roles.ROLE_CLIENT);			  
 		  }
 		  else if (user.getRoles().get(0) == Roles.ROLE_ADMIN) {
 			  throw new CustomException("Admin users should be activated through database.", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -216,7 +179,7 @@ public class UsersService {
 	  }
 	  
 	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {
-		  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUserIdAndActivated(userid);
+		  UsersEducemadenOrganizations userAdmEducemadenOrganization = usersEducemadenOrganizationsRepository.findByUsersid(userid);
 		  if (userAdmEducemadenOrganization == null) {
 			  return null;
 		  }

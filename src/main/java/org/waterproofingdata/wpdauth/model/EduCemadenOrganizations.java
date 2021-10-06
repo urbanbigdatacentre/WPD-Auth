@@ -1,5 +1,7 @@
 package org.waterproofingdata.wpdauth.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -47,5 +49,5 @@ public class EduCemadenOrganizations {
     private String responsible;
     
     @Column(nullable = false)
-    private String email;
+    private UUID activationkey;
 }

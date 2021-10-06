@@ -1,5 +1,7 @@
 package org.waterproofingdata.wpdauth.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,5 +26,5 @@ public class UsersProviderActivationKey {
     private Integer usersid;
 
     @Column(nullable = false)
-    private String activationkey;
+    private UUID activationkey;
 }

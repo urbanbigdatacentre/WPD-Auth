@@ -28,8 +28,5 @@ public class UsersEducemadenOrganizations {
     private Integer educemadenorganizationsid;
 
     @Column(nullable = false)
-    private String activationkey;
-    
-    @Column(nullable = false)
-    private Integer active;
+    private UUID activationkey;
 }

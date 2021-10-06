@@ -2,6 +2,7 @@ package org.waterproofingdata.wpdauth.integrationtest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID; 
 
 import com.google.gson.Gson;
@@ -16,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.waterproofingdata.wpdauth.exception.CustomException;
+import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.Roles;
 import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.model.UsersEducemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.UsersProviderActivationKey;
+import org.waterproofingdata.wpdauth.repository.EduCemadenOrganizationsRepository;
 import org.waterproofingdata.wpdauth.repository.UsersEducemadenOrganizationsRepository;
 import org.waterproofingdata.wpdauth.repository.UsersProviderActivationKeyRepository;
 import org.waterproofingdata.wpdauth.service.UsersService;
@@ -28,6 +31,9 @@ import org.waterproofingdata.wpdauth.service.UsersService;
 public class UsersServiceIntegrationTest {
 	@Autowired
 	private UsersService usersService;
+	
+	@Autowired
+	private EduCemadenOrganizationsRepository eduCemadenOrganizationsRepository;
 	
 	@Autowired
 	private UsersEducemadenOrganizationsRepository usersEducemadenOrganizationsRepository;
@@ -88,17 +94,20 @@ public class UsersServiceIntegrationTest {
 	
 	@Test 
 	public void testRandomUserInstitutionAndClientRegistration() {
+		List<EduCemadenOrganizations> leco = eduCemadenOrganizationsRepository.findAll();
+		assertTrue(leco.size() > 0, "List<EduCemadenOrganizations> should return rows.");
+		UUID u_s = leco.get(0).getActivationkey(); 
+		EduCemadenOrganizations eco = eduCemadenOrganizationsRepository.findByActivationkey(u_s);
+		assertNotNull(eco, "EduCemadenOrganizations should be returned.");
+		
 		Users userInst = setUpUserTest("user_institution_", Roles.ROLE_INSTITUTION);
 		String signup = usersService.signup(userInst);
 		assertNotNull(signup, "Signup token returned from usersService.signup(userInst) should not be null");
-		usersService.sendAdminKeyByEmailCemaden("danieldrb@gmail.com", userInst.getUsername());
+		usersService.activate(userInst.getUsername(), eco.getActivationkey().toString());
 		Users userInstUpdated = usersService.search(userInst.getUsername());
-		UsersEducemadenOrganizations userInstUpdatedEducemadenOrg = usersEducemadenOrganizationsRepository.findByUsersid(userInstUpdated.getId());
-		String keyFromUserInst = userInstUpdatedEducemadenOrg.getActivationkey();
-		usersService.activate(userInstUpdated.getUsername(), keyFromUserInst);
-		
+
 		UsersProviderActivationKey userInstUpdatedProviderKey = usersProviderActivationKeyRepository.findByUsersid(userInstUpdated.getId());
-		String keyFromUserInstToUserClient = userInstUpdatedProviderKey.getActivationkey();
+		String keyFromUserInstToUserClient = userInstUpdatedProviderKey.getActivationkey().toString();
 		Users userClient = setUpUserTest("user_client_institution_",  Roles.ROLE_CLIENT);
 		String signup2 = usersService.signup(userClient);
 		assertNotNull(signup2, "Signup token returned from usersService.signup(userClient) should not be null");

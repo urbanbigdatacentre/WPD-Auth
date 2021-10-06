@@ -83,41 +83,6 @@ public class UsersController {
 		  return userService.signup(CustomMapper.map(user, Users.class));
 	  }
 	  
-	  @PostMapping("/sendadminkeybyemailcemaden")
-	  @PreAuthorize("hasRole('ROLE_INSTITUTION')")
-	  @ApiOperation(
-		  value = "${UserController.sendadminkeybyemailcemaden}",
-		  authorizations = {@Authorization(value="apiKey")},
-		  notes = "This method is used for role 'ROLE_INSTITUTION'. To activate these users, a key is sent to the EduCemandenOrg e-mail and the user should inform this key to proceed."
-	  )
-	  @ApiResponses(value = {//
-		      @ApiResponse(code = 400, message = "Something went wrong"), //
-		      @ApiResponse(code = 403, message = "Access denied"), //
-		      @ApiResponse(code = 404, message = "User or Email Cemaden not found"), //
-		      @ApiResponse(code = 500, message = "Expired or invalid JWT token")
-	      }
-	  )
-	  public void sendadminkeybyemailcemaden(
-			  @ApiParam(
-	    		  name = "emailcemaden",
-	    		  type = "String",
-	    		  value = "Emailcemaden associated to the user",
-	    		  example = "The Cemaden e-mail registred in the database. The key will be sent to this e-mail, and the user should be inform this key to proceed.",
-	    		  required = true					  
-			  ) 
-			  @RequestParam String emailcemaden, //
-		      @ApiParam(
-	    		  name = "username",
-	    		  type = "String",
-	    		  value = "username of the user",
-	    		  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
-	    		  required = true
-			  ) 
-			  @RequestParam String username
-		  ) {
-		  userService.sendAdminKeyByEmailCemaden(emailcemaden, username);
-	  }	  
-
 	  @PostMapping("/activate")
 	  @PreAuthorize("hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
 	  @ApiOperation(
