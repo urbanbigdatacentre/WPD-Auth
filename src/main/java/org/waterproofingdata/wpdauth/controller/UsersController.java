@@ -110,7 +110,7 @@ public class UsersController {
 				  name = "activationkey",
 				  type = "String",
 				  value = "Activation Key to activate the user",
-				  example = "If user belongs to 'ROLE_INSTITUTION' the key should be collected from the emailcemaden, previously sent by ${UserController.sendadminkeybyemailcemaden}. If the user belongs to 'ROLE_CLIENT' the key should be provided by a 'ROLE_INSTITUTION' valid user.",
+				  example = "If user belongs to 'ROLE_INSTITUTION' the key should be collected from the EduCemadenOrganization registration. If the user belongs to 'ROLE_CLIENT' the key should be provided by a 'ROLE_INSTITUTION' valid user.",
 				  required = true					  
 			  ) 
 			  @RequestParam String activationkey
