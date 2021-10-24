@@ -79,3 +79,13 @@ CREATE TABLE IF NOT EXISTS auth.users_educemaden_organizations (
     activationkey UUID UNIQUE NOT NULL,
     FOREIGN KEY (users_id) REFERENCES auth.users (id)
 );
+
+--drop table auth.users_educemaden_organizations;
+--drop table auth.educemaden_organizations;
+--drop table auth.users_provider_activationkey;
+--drop table auth.users_roles;
+--drop table auth.roles;
+--drop table auth.forgotpassword_questions_users_answers;
+--drop table auth.forgotpassword_questions;
+--drop table auth.forgotpassword_keys;
+--drop table auth.users;
