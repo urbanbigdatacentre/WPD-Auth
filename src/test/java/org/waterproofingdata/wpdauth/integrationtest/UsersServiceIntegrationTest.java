@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.waterproofingdata.wpdauth.dto.UsersRequestDTO;
 import org.waterproofingdata.wpdauth.exception.CustomException;
 import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.Roles;
@@ -52,6 +53,17 @@ public class UsersServiceIntegrationTest {
 		u.setTermsofusage(true);
 		u.setRoles(new ArrayList<Roles>(Arrays.asList(role)));
 		String uJson = new Gson().toJson(u);
+		
+		UsersRequestDTO urDTO = new UsersRequestDTO();
+		urDTO.setUsername(uName);
+		urDTO.setNickname(uName);		
+		urDTO.setPassword(UUID.randomUUID().toString());
+		urDTO.setState("SP");
+		urDTO.setCity("São Paulo");
+		urDTO.setTermsofusage(true);
+		urDTO.setRoles(new ArrayList<Roles>(Arrays.asList(role)));
+		String urDTOJson = new Gson().toJson(u);
+		
 		return u;
 	}
 	
@@ -90,6 +102,8 @@ public class UsersServiceIntegrationTest {
 		Users u = setUpUserTest("user_", Roles.ROLE_CLIENT);
 		String signup = usersService.signup(u);
 		assertNotNull(signup, "Signup token returned from usersService.signup(user) should not be null");
+		assertEquals(true, usersService.existsByUsername(u.getUsername()));
+		assertEquals(true, usersService.existsByNickname(u.getNickname()));
 	}
 	
 	@Test 

@@ -139,7 +139,7 @@ public class UsersRequestDTO {
 			  name = "roles",
 			  dataType = "String",
 			  value = "roles of the user.",
-			  example = "i.e. ROLE_CLIENT.",
+			  example = "i.e. [ROLE_CLIENT].",
 			  required = true
 			  )
 	  private List<Roles> roles;

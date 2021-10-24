@@ -67,6 +67,10 @@ public class UsersService {
 		  return usersRepository.existsByUsername(username);
 	  }
 	  
+	  public boolean existsByNickname(String nickname) {
+		  return usersRepository.existsByNickname(nickname);
+	  }
+	  
 	  public Users search(String username) {
 		  Users user = usersRepository.findByUsername(username);
 		  if (user == null) {
@@ -101,7 +105,7 @@ public class UsersService {
 			  if (user.getNickname().length() == 0) {
 				  throw new CustomException("Nickname must be provided", HttpStatus.UNPROCESSABLE_ENTITY);
 			  }
-			  else if (usersRepository.existsByNickname(user.getNickname())) {
+			  else if (existsByNickname(user.getNickname())) {
 				  String nickname_unique = usersRepository.findSuggestedNickname(user.getNickname());
 				  throw new CustomException(String.format("Nickname already exists. Would you like to use '%s'?", nickname_unique), HttpStatus.UNPROCESSABLE_ENTITY);
 			  }

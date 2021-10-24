@@ -31,6 +31,50 @@ public class UsersController {
 	  @Autowired
 	  private UsersService userService;
 
+	  @PostMapping("/existsByUsername")
+	  @ApiOperation(
+		  value = "${UserController.existsByUsername}",
+		  notes = "From a username, this method returns if there is a username in db or not."
+	  )
+	  @ApiResponses(value = {//
+		      @ApiResponse(code = 400, message = "Something went wrong")
+	      }
+	  )
+	  public boolean existsByUsername(//
+		      @ApiParam(
+	    		  name = "username",
+	    		  type = "String",
+	    		  value = "username of the user",
+	    		  example = "This is an unique field, and consumers should be aware of it. By convention, WP6 should send the user phone number (i.e. (99)99999-9999).",
+	    		  required = true
+		      ) 
+		      @RequestParam String username
+		  ) {
+		  return userService.existsByUsername(username);
+	  }	 
+	  
+	  @PostMapping("/existsByNickname")
+	  @ApiOperation(
+		  value = "${UserController.existsByNickname}",
+		  notes = "From a nickname, this method returns if there is a nickname in db or not."
+	  )
+	  @ApiResponses(value = {//
+		      @ApiResponse(code = 400, message = "Something went wrong")
+	      }
+	  )
+	  public boolean existsByNickname(//
+		      @ApiParam(
+	    		  name = "nickname",
+	    		  type = "String",
+	    		  value = "nickname of the user",
+	    		  example = "This is an unique field, and consumers should be aware of it.",
+	    		  required = true
+		      ) 
+		      @RequestParam String nickname
+		  ) {
+		  return userService.existsByNickname(nickname);
+	  }
+	  
 	  @PostMapping("/login")
 	  @ApiOperation(
 		  value = "${UserController.login}",
@@ -77,7 +121,7 @@ public class UsersController {
 				  name = "user",
 				  value = "Signup User", 
 				  required = true
-			  ) 
+			  )
 			  @RequestBody UsersRequestDTO user
 		  ) {
 		  return userService.signup(CustomMapper.map(user, Users.class));
