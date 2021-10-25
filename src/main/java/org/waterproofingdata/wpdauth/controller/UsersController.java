@@ -194,7 +194,7 @@ public class UsersController {
 	  }
 
 	  @GetMapping(value = "/me")
-	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
 	  @ApiOperation(
 		  value = "${UserController.me}", 
 		  response = UsersResponseDTO.class, 
@@ -213,7 +213,7 @@ public class UsersController {
 	  }
 
 	  @GetMapping("/refresh")
-	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
 	  public String refresh(HttpServletRequest req) {
 	    return userService.refresh(req.getRemoteUser());
 	  }
