@@ -1,5 +1,7 @@
 package org.waterproofingdata.wpdauth.service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -187,11 +189,12 @@ public class UsersService {
 		  if (userAdmEducemadenOrganization == null) {
 			  return null;
 		  }
+		  eduCemadenOrganizationsRepository.findAll();
 		  return eduCemadenOrganizationsRepository.getById(userAdmEducemadenOrganization.getEducemadenorganizationsid());
 	  }
 	  
 	  public UsersProviderActivationKey findProviderActivationKeyById(Integer usersid) {
-	    return usersProviderActivationKeyRepository.findByUsersid(usersid);
+		  return usersProviderActivationKeyRepository.findByUsersid(usersid); 
 	  }
 
 	  public String refresh(String username) {

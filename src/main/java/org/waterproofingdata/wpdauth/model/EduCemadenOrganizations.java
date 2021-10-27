@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import lombok.Getter;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EduCemadenOrganizations {
     @Id
+    @GeneratedValue
     private Integer id;
 
     @Column(nullable = true)
@@ -30,7 +32,7 @@ public class EduCemadenOrganizations {
     @Column(nullable = true)
     private String inep_code;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = true)

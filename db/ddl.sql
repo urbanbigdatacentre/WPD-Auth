@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS auth.users_provider_activationkey (
 );
 
 CREATE TABLE IF NOT EXISTS auth.educemaden_organizations (
-    id INT NOT NULL,
+    id INT PRIMARY KEY,
     active VARCHAR(20) NULL,
     name VARCHAR(255) NOT NULL,
     creation_date varchar(50) NULL,
