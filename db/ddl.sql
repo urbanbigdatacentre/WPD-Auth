@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS auth.educemaden_organizations (
     type varchar(100) NULL,
     website varchar(255) NULL,
     login varchar(50) NULL,
-    address varchar(50) NULL,
+    address varchar(255) NULL,
     responsible varchar(50) NULL,
     activationkey UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4()
 );
