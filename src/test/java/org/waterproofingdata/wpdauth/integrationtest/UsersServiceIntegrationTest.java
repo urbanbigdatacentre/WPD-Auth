@@ -98,6 +98,18 @@ public class UsersServiceIntegrationTest {
 	}
 	
 	@Test 
+	public void testAdmUserFindById() {
+		Users u = usersService.findById(1);
+		assertEquals("admin", u.getUsername());
+		assertEquals("admin", u.getNickname());
+		assertEquals("SP", u.getState());
+		assertEquals("São Paulo", u.getCity());
+		assertEquals(true, u.getTermsofusage());
+		assertEquals(1, u.getActive());
+		assertEquals(Roles.ROLE_ADMIN, u.getRoles().get(0));		
+	}	
+	
+	@Test 
 	public void testRandomUserSignup() {
 		Users u = setUpUserTest("user_", Roles.ROLE_CLIENT);
 		String signup = usersService.signup(u);

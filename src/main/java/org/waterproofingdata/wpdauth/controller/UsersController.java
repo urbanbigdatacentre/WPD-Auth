@@ -30,6 +30,36 @@ import io.swagger.annotations.Authorization;
 public class UsersController {
 	  @Autowired
 	  private UsersService userService;
+	  
+	  @GetMapping(value = "/{id}")
+	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
+	  @ApiOperation(
+	      value = "${UserController.findById}", 
+	      response = UsersResponseDTO.class, 
+	      authorizations = { @Authorization(value="apiKey") },
+	      notes = "This is the user findById search method."
+	  )
+	  @ApiResponses(value = {//
+	          @ApiResponse(code = 403, message = "Access denied"), //
+	          @ApiResponse(code = 404, message = "The user doesn't exist"), //
+	          @ApiResponse(code = 500, message = "Expired or invalid JWT token")
+	      }
+	  )
+	  public UsersResponseDTO findById (
+	          @ApiParam(
+	                  name = "id",
+	                  type = "Integer",
+	                  value = "user id",
+	                  example = "A positive numeric id.",
+	                  required = true
+	              ) 
+	          @RequestParam Integer id		  
+	      ) {
+	      UsersResponseDTO urDTO = CustomMapper.map(userService.findById(id), UsersResponseDTO.class);
+	      urDTO.setEduCemadenOrganization(userService.findEduCemadenOrganizationById(urDTO.getId()));
+	      urDTO.setProviderActivationKey(userService.findProviderActivationKeyById(urDTO.getId()));
+	      return urDTO;
+	  }	  
 
 	  @PostMapping("/existsByUsername")
 	  @ApiOperation(

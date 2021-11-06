@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: 'This is a sample JWT authentication service. You can find out more about JWT at [https://jwt.io/](https://jwt.io/). For this sample, you can use the `admin` or `client` users (password: admin and client respectively) to test the authorization filters. Once you have successfully logged in and obtained the token, you should click on the right top button `Authorize` and introduce it with the prefix "Bearer ".'
-  version: 1.0.5
+  version: 1.0.4
   title: The authenticator for the Waterproofing Data (WPD) Work Packages
   contact:
     email: igsd@warwick.ac.uk
@@ -435,6 +435,40 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: ${UserController.findById}
+      description: This is the user findById search method.
+      operationId: findByIdUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: user id
+          required: true
+          type: integer
+          format: int32
+          allowEmptyValue: false
+          x-example: A positive numeric id.
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UsersResponseDTO'
+        '403':
+          description: Access denied
+        '404':
+          description: The user doesn't exist
+        '500':
+          description: Expired or invalid JWT token
+      security:
+        - Authorization:
+            - global
+        - apiKey: []
+      deprecated: false
   /users/{username}:
     get:
       tags:
@@ -699,14 +733,16 @@ definitions:
         format: int32
         example: i.e. true.
         description: whether user is active or not.
-      role:
-        type: string
-        example: i.e. 'ROLE_ADMIN' means system administrator, 'ROLE_INSTITUTION' means institution administrator, 'ROLE_CLIENT' means regular users
-        description: institution type of the user.
-        enum:
-          - '{@code ROLE_ADMIN'
-          - ROLE_INSTITUTION
-          - ROLE_CLIENT}
+      roles:
+        type: array
+        example: i.e. ['ROLE_ADMIN'] means system administrator, ['ROLE_INSTITUTION'] means institution administrator, ['ROLE_CLIENT'] means regular users
+        description: list of institution type of the user.
+        items:
+          type: string
+          enum:
+            - '{@code ROLE_ADMIN'
+            - ROLE_INSTITUTION
+            - ROLE_CLIENT}
       eduCemadenOrganization:
         description: which Educational Cemaden Organization the user belongs.
         $ref: '#/definitions/EduCemadenOrganizations'

@@ -1,5 +1,7 @@
 package org.waterproofingdata.wpdauth.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +10,8 @@ import org.waterproofingdata.wpdauth.model.Users;
 
 @Transactional
 public interface UsersRepository extends JpaRepository<Users, Integer> {
+	  Optional<Users> findById(Integer id);
+      
 	  boolean existsByUsername(String username);
 
 	  Users findByUsername(String username);

@@ -65,6 +65,10 @@ public class UsersService {
 		  }
 	  }
 	  
+	  public Users findById(Integer id) {
+		  return usersRepository.findById(id).orElseThrow(() -> new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND));
+	  }
+	  
 	  public boolean existsByUsername(String username) {
 		  return usersRepository.existsByUsername(username);
 	  }
@@ -181,7 +185,7 @@ public class UsersService {
 	  }
 
 	  public Users whoami(HttpServletRequest req) {
-	    return usersRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
+		  return usersRepository.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
 	  }
 	  
 	  public EduCemadenOrganizations findEduCemadenOrganizationById(Integer userid) {

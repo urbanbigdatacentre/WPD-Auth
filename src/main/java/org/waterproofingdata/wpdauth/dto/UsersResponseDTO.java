@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.List;
 
 import org.waterproofingdata.wpdauth.model.EduCemadenOrganizations;
 import org.waterproofingdata.wpdauth.model.Roles;
@@ -149,13 +150,13 @@ public class UsersResponseDTO {
 	  @ApiModelProperty(
 			  position = 13,
 			  name = "institutiontype",
-			  dataType = "String",
-			  value = "institution type of the user.",
-			  example = "i.e. 'ROLE_ADMIN' means system administrator, 'ROLE_INSTITUTION' means institution administrator, 'ROLE_CLIENT' means regular users",
+			  dataType = "List<Roles>",
+			  value = "list of institution type of the user.",
+			  example = "i.e. ['ROLE_ADMIN'] means system administrator, ['ROLE_INSTITUTION'] means institution administrator, ['ROLE_CLIENT'] means regular users",
 			  allowableValues = "{@code ROLE_ADMIN, ROLE_INSTITUTION, ROLE_CLIENT}",
 			  required = false			  
 			  )
-	  Roles role;
+	  List<Roles> roles;
 	  
 	  @ApiModelProperty(
 			  position = 14,
