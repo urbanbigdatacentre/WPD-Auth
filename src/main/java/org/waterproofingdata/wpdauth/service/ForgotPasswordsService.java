@@ -109,23 +109,29 @@ public class ForgotPasswordsService {
 	
 	public String loginByUsernameAndAnswers(String username, List<ForgotPasswordsQuestionsUsersAnswers> answers) {
 		Users user = usersRepository.findByUsername(username);
+
 	    if (user == null) {
 	    	throw new CustomException("The username doesn't exist", HttpStatus.NOT_FOUND);
 	    }
 	    List<Roles> roles = user.getRoles();
-	    
-	    int correctAnswers = 0;
+
+
+		boolean correctAnswers = false;
+		
 	    for (ForgotPasswordsQuestionsUsersAnswers answer : answers) {
-	    	ForgotPasswordsQuestionsUsersAnswers answerComparison = forgotPasswordsQuestionsUsersAnswersRepository.findByForgotPasswordQuestionsAndUserid(answer.getForgotpasswordquestionsid(), answer.getUsersid());
-	    	if (answerComparison == null) {
+	    	ForgotPasswordsQuestionsUsersAnswers answerComparison = forgotPasswordsQuestionsUsersAnswersRepository.findByForgotPasswordQuestionsAndUserid(answer.getForgotpasswordquestionsid(), user.getId());
+						
+			if (answerComparison == null) {
 	    		throw new CustomException("The comparison answer doesn't exist", HttpStatus.NOT_FOUND);
-	    	}
-	    	
+			}
+			
 	    	if (answer.getAnswer().equalsIgnoreCase(answerComparison.getAnswer())) {
-	    		correctAnswers++;
+				correctAnswers = true;
+				break;
 	    	}
-	    }
-	    if (correctAnswers < 2) {
+		}
+		
+	    if (!correctAnswers) {
 	    	throw new CustomException("Invalid answers supplied to login. Must have at least 2 correct ones.", HttpStatus.UNPROCESSABLE_ENTITY);
 	    }
 		
