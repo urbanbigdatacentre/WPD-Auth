@@ -118,25 +118,25 @@ public class UsersServiceIntegrationTest {
 		assertEquals(true, usersService.existsByNickname(u.getNickname()));
 	}
 	
-	@Test 
-	public void testRandomUserInstitutionAndClientRegistration() {
-		List<EduCemadenOrganizations> leco = eduCemadenOrganizationsRepository.findAll();
-		assertTrue(leco.size() > 0, "List<EduCemadenOrganizations> should return rows.");
-		UUID u_s = leco.get(0).getActivationkey(); 
-		EduCemadenOrganizations eco = eduCemadenOrganizationsRepository.findByActivationkey(u_s);
-		assertNotNull(eco, "EduCemadenOrganizations should be returned.");
+	// @Test 
+	// public void testRandomUserInstitutionAndClientRegistration() {
+	// 	List<EduCemadenOrganizations> leco = eduCemadenOrganizationsRepository.findAll();
+	// 	assertTrue(leco.size() > 0, "List<EduCemadenOrganizations> should return rows.");
+	// 	UUID u_s = leco.get(0).getActivationkey(); 
+	// 	EduCemadenOrganizations eco = eduCemadenOrganizationsRepository.findByActivationkey(u_s);
+	// 	assertNotNull(eco, "EduCemadenOrganizations should be returned.");
 		
-		Users userInst = setUpUserTest("user_institution_", Roles.ROLE_INSTITUTION);
-		String signup = usersService.signup(userInst);
-		assertNotNull(signup, "Signup token returned from usersService.signup(userInst) should not be null");
-		usersService.activate(userInst.getUsername(), eco.getActivationkey().toString());
-		Users userInstUpdated = usersService.search(userInst.getUsername());
+	// 	Users userInst = setUpUserTest("user_institution_", Roles.ROLE_INSTITUTION);
+	// 	String signup = usersService.signup(userInst);
+	// 	assertNotNull(signup, "Signup token returned from usersService.signup(userInst) should not be null");
+	// 	usersService.activate(userInst.getUsername(), eco.getActivationkey().toString());
+	// 	Users userInstUpdated = usersService.search(userInst.getUsername());
 
-		UsersProviderActivationKey userInstUpdatedProviderKey = usersProviderActivationKeyRepository.findByUsersid(userInstUpdated.getId());
-		String keyFromUserInstToUserClient = userInstUpdatedProviderKey.getActivationkey().toString();
-		Users userClient = setUpUserTest("user_client_institution_",  Roles.ROLE_CLIENT);
-		String signup2 = usersService.signup(userClient);
-		assertNotNull(signup2, "Signup token returned from usersService.signup(userClient) should not be null");
-		usersService.activate(userClient.getUsername(), keyFromUserInstToUserClient);
-	}	
+	// 	UsersProviderActivationKey userInstUpdatedProviderKey = usersProviderActivationKeyRepository.findByUsersid(userInstUpdated.getId());
+	// 	String keyFromUserInstToUserClient = userInstUpdatedProviderKey.getActivationkey().toString();
+	// 	Users userClient = setUpUserTest("user_client_institution_",  Roles.ROLE_CLIENT);
+	// 	String signup2 = usersService.signup(userClient);
+	// 	assertNotNull(signup2, "Signup token returned from usersService.signup(userClient) should not be null");
+	// 	usersService.activate(userClient.getUsername(), keyFromUserInstToUserClient);
+	// }	
 }
