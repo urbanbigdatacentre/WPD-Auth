@@ -63,6 +63,11 @@ Once the dependencies are properly installed, follow the steps below:
   $ mvn spring-boot:run
 ```
 
+- Run the project as a service most likely in a production environment (mind the '&' character at the end)
+
+```console
+  $ mvn spring-boot:run &
+```
 
 # How to run this project
 
