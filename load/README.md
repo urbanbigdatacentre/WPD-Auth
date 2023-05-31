@@ -17,3 +17,16 @@ Once the project setup was finished successfully, follow the steps below:
   $ psql -d wpdauth -c "SELECT * FROM auth.educemaden_organizations;"
 ```
 
+# How to append schools
+
+To avoid truncating the entire table and load the data again, it is possible to append new schools to the table. To do so, follow the steps below:
+
+- Start the PostgreSQL and run the scripts to append the schools in the append file.
+
+```console
+  $ psql -d wpdauth -c "\COPY auth.educemaden_organizations(id,active,name,creation_date,inep_code,phone,type,website,login,address,responsible) FROM '/<absolute path>/educacao.cemaden-organization-append.csv' DELIMITER ',' CSV HEADER;"
+  $ psql -d wpdauth -c "SELECT * FROM auth.educemaden_organizations;"
+```
+
+
+
