@@ -28,5 +28,11 @@ To avoid truncating the entire table and load the data again, it is possible to 
   $ psql -d wpdauth -c "SELECT * FROM auth.educemaden_organizations;"
 ```
 
+Alternatively, it is possible to use the [pgAdmin](https://www.pgadmin.org/) to run an script similar to the one below:
 
-
+insert
+```sql
+INSERT INTO 
+  auth.educemaden_organizations (id,active,name,creation_date,inep_code,phone,type,website,login,address,responsible)
+VALUES ('idvalue', 'True/False', 'Org Name','YYYY-MM-dd hh:mm:ss.0','1111111','(11) 223344556','SCHOOL/CIVIL_DEFENCE','NULL','111','112','112');
+```
