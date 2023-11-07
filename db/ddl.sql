@@ -1,3 +1,6 @@
+-- Ensure that the extension is installed and activationkeys are generated
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS auth.users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
