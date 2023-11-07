@@ -25,8 +25,9 @@ Once the dependencies are properly installed, follow the steps below:
 - Clone the project locally
 
 ```console
-    $ git clone https://github.com/IGSD-UoW/wpdAuth.git
-    $ cd wpdAuth
+    $ git clone https://github.com/urbanbigdatacentre/WPD-Auth.git
+
+    $ cd WPD-Auth
 ```
 
 - Start the PostgreSQL and run the scripts to create the database and get the load data.
