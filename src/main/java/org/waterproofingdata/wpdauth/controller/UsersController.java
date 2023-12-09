@@ -8,10 +8,12 @@ import org.waterproofingdata.wpdauth.dto.UsersResponseDTO;
 import org.waterproofingdata.wpdauth.model.Users;
 import org.waterproofingdata.wpdauth.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +32,16 @@ import io.swagger.annotations.Authorization;
 public class UsersController {
 	  @Autowired
 	  private UsersService userService;
+
+	  @PutMapping("/update")
+	  public ResponseEntity<Users> editUser(@RequestBody Users updatedUser) {
+		  Users editedUser = userService.editUser(updatedUser);
+		  if (editedUser != null) {
+			  return ResponseEntity.ok(editedUser);
+		  } else {
+			  return ResponseEntity.notFound().build();
+		  }
+	  }
 	  
 	  @GetMapping(value = "/{id}")
 	  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
@@ -156,7 +168,7 @@ public class UsersController {
 		  ) {
 		  return userService.signup(CustomMapper.map(user, Users.class));
 	  }
-	  
+
 	  @PostMapping("/activate")
 	  @PreAuthorize("hasRole('ROLE_INSTITUTION') or hasRole('ROLE_CLIENT')")
 	  @ApiOperation(
