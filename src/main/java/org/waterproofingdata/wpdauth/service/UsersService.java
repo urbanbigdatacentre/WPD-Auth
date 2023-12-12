@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,6 +49,27 @@ public class UsersService {
 
 	  @Autowired
 	  private AuthenticationManager authenticationManager;
+
+	  public Users editUser(@NotNull Users updatedUser) {
+		  Users existingUser = usersRepository.findById(updatedUser.getId()).orElse(null);
+		  if (existingUser != null) {
+			  existingUser.setNickname(updatedUser.getNickname());
+			  existingUser.setDateofborn(updatedUser.getDateofborn());
+			  existingUser.setGender(updatedUser.getGender());
+			  existingUser.setState(updatedUser.getState());
+			  existingUser.setCity(updatedUser.getCity());
+			  existingUser.setInstitutiontype(updatedUser.getInstitutiontype());
+			  existingUser.setInstitution(updatedUser.getInstitution());
+			  existingUser.setSecurityquestion(updatedUser.getSecurityquestion());
+			  existingUser.setSecurityanswer(updatedUser.getSecurityanswer());
+			  existingUser.setTermsofusage(updatedUser.getTermsofusage());
+			  existingUser.setAvatar(updatedUser.getAvatar());
+			  existingUser.setActive(updatedUser.getActive());
+
+			  return usersRepository.save(existingUser);
+		  }
+		  return null;
+	  }
 	  
 	  private void addNewUsersEducemadenOrganization(Integer userid, Integer educemadenorganizationsid, UUID uuid_activationkey, Roles role) {
 		  UsersEducemadenOrganizations userEducemadenOrg = new UsersEducemadenOrganizations();

@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e096f643-4c6b-4769-84b8-63aa85cd1521" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/db/ddl.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/ddl.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/waterproofingdata/wpdauth/controller/UsersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/waterproofingdata/wpdauth/controller/UsersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/waterproofingdata/wpdauth/service/UsersService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/waterproofingdata/wpdauth/service/UsersService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +21,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
   <component name="ProjectId" id="2QZB1w4yMqJ44pz7TgaoomMXRlQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -29,7 +35,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/diegopajaritograjales/PycharmProjects/WPD-Auth",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/xampp/htdocs/java-wpd-auth/WPD-Auth-PR/WPD-Auth",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
