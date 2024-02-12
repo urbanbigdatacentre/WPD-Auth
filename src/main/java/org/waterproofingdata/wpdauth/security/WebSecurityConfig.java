@@ -33,13 +33,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	    // Entry points
 	    http.authorizeRequests()//
-	        .antMatchers("/users/login").permitAll()//
-	        .antMatchers("/users/signup").permitAll()//
-	        .antMatchers("/users/existsByUsername").permitAll()//
+			.antMatchers("/actuator/**").hasRole("ADMIN") //
+			.antMatchers("/users/login").permitAll()//
+			.antMatchers("/users/signup").permitAll()//
+			.antMatchers("/users/existsByUsername").permitAll()//
 			.antMatchers("/users/existsByNickname").permitAll()//
 			.antMatchers("/forgotpasswords/findallforgotpasswordquestions").permitAll()//
 			.antMatchers("/forgotpasswords/loginbyusernameandanswers").permitAll()//
-	        .antMatchers("/h2-console/**/**").permitAll()
+		    .antMatchers("/forgotpasswords/findallforgotpasswordquestions").permitAll() //
+	        .antMatchers("/forgotpasswords/loginbyusernameandanswers").permitAll() //
+			.antMatchers("/forgotpasswords/loginbyusernameandanswers").permitAll()//
 	        // Disallow everything else..
 			.anyRequest().authenticated();
 			
