@@ -29,11 +29,29 @@ Once the dependencies are properly installed, follow the steps below:
     $ cd wpdAuth
 ```
 
-- Start the PostgreSQL and run the scripts to create the database and get the load data.
+- If your database server is not set up, install the latest version of postgreSQL.
 
+```console
+  sudo apt-get update
+  sudo apt install postgresql postgresql-contrib
+```
+
+- To login in the server use the following command:
+
+-- Debian
+```console
+  su postgres
+  psql
+```
+-- Mac
 ```console
   $ brew services start postgresql
   $ psql postgres
+```
+
+- Start the PostgreSQL and run the scripts to create the database and get the load data.
+
+```console
   postgres=# \conninfo
   postgres=# CREATE DATABASE wpdauth;
   postgres=# \c wpdauth
